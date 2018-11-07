@@ -34,8 +34,8 @@ const list = document.querySelector('#list-id')
 
 // To install this behavior
 install(input, list)
-// To move selection to the nth+2 item in the list
-navigate(input, list, 2)
+// To move selection to the nth+1 item in the list
+navigate(input, list, 1)
 // To uninstall this behavior
 uninstall(input, list)
 ```

@@ -1,0 +1,5 @@
+/* @flow strict */
+
+declare export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void;
+declare export function navigate(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement, indexDiff?: -1 | 1): void;
+declare export function uninstall(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void;

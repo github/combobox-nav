@@ -3,6 +3,40 @@ function press(input, key, ctrlKey) {
 }
 
 describe('combobox-nav', function() {
+  describe('with API', function() {
+    beforeEach(function() {
+      document.body.innerHTML = `
+        <input aria-owns="list-id" role="combobox" type="text">
+        <ul role="listbox" id="list-id">
+          <li id="baymax" role="option">Baymax</li>
+          <li><del>BB-8</del></li>
+          <li id="hubot" role="option">Hubot</li>
+          <li id="r2-d2" role="option">R2-D2</li>
+        </ul>
+      `
+    })
+
+    afterEach(function() {
+      document.body.innerHTML = ''
+    })
+
+    it('installs, navigates, and uninstalls', function() {
+      const input = document.querySelector('input')
+      const list = document.querySelector('ul')
+      comboboxNav.install(input, list)
+
+      press(input, 'ArrowDown')
+      assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
+      comboboxNav.navigate(input, list, 1)
+      assert.equal(list.children[2].getAttribute('aria-selected'), 'true')
+
+      comboboxNav.uninstall(input, list)
+
+      press(input, 'ArrowDown')
+      assert.equal(list.children[2].getAttribute('aria-selected'), 'true')
+    })
+  })
+
   describe('with default setup', function() {
     beforeEach(function() {
       document.body.innerHTML = `

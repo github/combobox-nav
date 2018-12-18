@@ -8,16 +8,18 @@
   <style>[aria-selected="true"] { font-weight: bold; }</style>
 </head>
 <body>
-  <label>
-    Least favorite robot
-    <input aria-owns="list-id" role="combobox" type="text">
-  </label>
-  <ul role="listbox" id="list-id">
-    <li id="baymax" role="option">Baymax</li>
-    <li><del>BB-8</del></li>
-    <li id="hubot" role="option">Hubot</li>
-    <li id="r2-d2" role="option">R2-D2</li>
-  </ul>
+  <form>
+    <label>
+      Least favorite robot
+      <input aria-owns="list-id" role="combobox" type="text">
+    </label>
+    <ul role="listbox" id="list-id">
+      <li id="baymax" role="option">Baymax</li>
+      <li><del>BB-8</del></li>
+      <li id="hubot" role="option">Hubot</li>
+      <li id="r2-d2" role="option">R2-D2</li>
+    </ul>
+  </form>
   <pre class="events"></pre>
   <script type="text/javascript">
     comboboxNav.install(document.querySelector('input'), document.querySelector('ul'))

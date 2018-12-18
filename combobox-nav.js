@@ -30,8 +30,12 @@ function keyboardBindings(event: KeyboardEvent) {
   switch (event.key) {
     case 'Enter':
     case 'Tab':
-      commit(input, list)
-      event.preventDefault()
+      if (commit(input, list)) {
+        event.preventDefault()
+      }
+      break
+    case 'Escape':
+      clearSelection(list)
       break
     case 'ArrowDown':
       navigate(input, list, 1)
@@ -64,10 +68,11 @@ function commitWithElement(event: MouseEvent) {
   event.preventDefault()
 }
 
-function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
+function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): boolean {
   const target = list.querySelector('[aria-selected="true"]')
-  if (!target) return
+  if (!target) return false
   fireCommitEvent(target)
+  return true
 }
 
 function fireCommitEvent(target: Element): void {
@@ -104,14 +109,19 @@ export function navigate(
   }
 }
 
-function trackComposition(event: Event) {
+function clearSelection(list): void {
+  const target = list.querySelector('[aria-selected="true"]')
+  if (!target) return
+  target.setAttribute('aria-selected', 'false')
+}
+
+function trackComposition(event: Event): void {
   const input = event.currentTarget
   if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
   compositionMap.set(input, event.type === 'compositionstart')
 
   const list = document.getElementById(input.getAttribute('aria-owns') || '')
   if (!list) return
-  const target = list.querySelector('[aria-selected="true"]')
-  if (!target) return
-  target.setAttribute('aria-selected', 'false')
+
+  clearSelection(list)
 }

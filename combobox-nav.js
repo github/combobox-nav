@@ -1,12 +1,18 @@
 /* @flow strict */
 
+const compositionMap = new WeakMap()
+
 export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
+  input.addEventListener('compositionstart', trackComposition)
+  input.addEventListener('compositionend', trackComposition)
   input.addEventListener('keydown', keyboardBindings)
   list.addEventListener('click', commitWithElement)
 }
 
 export function uninstall(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
   input.removeAttribute('aria-activedescendant')
+  input.removeEventListener('compositionstart', trackComposition)
+  input.removeEventListener('compositionend', trackComposition)
   input.removeEventListener('keydown', keyboardBindings)
   list.removeEventListener('click', commitWithElement)
 }
@@ -17,6 +23,7 @@ function keyboardBindings(event: KeyboardEvent) {
   if (event.shiftKey || event.metaKey || event.altKey) return
   const input = event.currentTarget
   if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
+  if (compositionMap.get(input)) return
   const list = document.getElementById(input.getAttribute('aria-owns') || '')
   if (!list) return
 
@@ -95,4 +102,16 @@ export function navigate(
       el.setAttribute('aria-selected', 'false')
     }
   }
+}
+
+function trackComposition(event: Event) {
+  const input = event.currentTarget
+  if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
+  compositionMap.set(input, event.type === 'compositionstart')
+
+  const list = document.getElementById(input.getAttribute('aria-owns') || '')
+  if (!list) return
+  const target = list.querySelector('[aria-selected="true"]')
+  if (!target) return
+  target.setAttribute('aria-selected', 'false')
 }

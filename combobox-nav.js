@@ -1,7 +1,5 @@
 /* @flow strict */
 
-const compositionMap = new WeakMap()
-
 export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
   input.addEventListener('compositionstart', trackComposition)
   input.addEventListener('compositionend', trackComposition)
@@ -17,13 +15,14 @@ export function uninstall(input: HTMLTextAreaElement | HTMLInputElement, list: H
   list.removeEventListener('click', commitWithElement)
 }
 
+let isComposing = false
 const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
 
 function keyboardBindings(event: KeyboardEvent) {
   if (event.shiftKey || event.metaKey || event.altKey) return
   const input = event.currentTarget
   if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
-  if (compositionMap.get(input)) return
+  if (isComposing) return
   const list = document.getElementById(input.getAttribute('aria-owns') || '')
   if (!list) return
 
@@ -118,7 +117,7 @@ function clearSelection(list): void {
 function trackComposition(event: Event): void {
   const input = event.currentTarget
   if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
-  compositionMap.set(input, event.type === 'compositionstart')
+  isComposing = event.type === 'compositionstart'
 
   const list = document.getElementById(input.getAttribute('aria-owns') || '')
   if (!list) return

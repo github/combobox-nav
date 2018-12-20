@@ -1,30 +1,40 @@
 /* @flow strict */
 
 export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
+  input.addEventListener('compositionstart', trackComposition)
+  input.addEventListener('compositionend', trackComposition)
   input.addEventListener('keydown', keyboardBindings)
   list.addEventListener('click', commitWithElement)
 }
 
 export function uninstall(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
   input.removeAttribute('aria-activedescendant')
+  input.removeEventListener('compositionstart', trackComposition)
+  input.removeEventListener('compositionend', trackComposition)
   input.removeEventListener('keydown', keyboardBindings)
   list.removeEventListener('click', commitWithElement)
 }
 
+let isComposing = false
 const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
 
 function keyboardBindings(event: KeyboardEvent) {
   if (event.shiftKey || event.metaKey || event.altKey) return
   const input = event.currentTarget
   if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
+  if (isComposing) return
   const list = document.getElementById(input.getAttribute('aria-owns') || '')
   if (!list) return
 
   switch (event.key) {
     case 'Enter':
     case 'Tab':
-      commit(input, list)
-      event.preventDefault()
+      if (commit(input, list)) {
+        event.preventDefault()
+      }
+      break
+    case 'Escape':
+      clearSelection(list)
       break
     case 'ArrowDown':
       navigate(input, list, 1)
@@ -57,10 +67,11 @@ function commitWithElement(event: MouseEvent) {
   event.preventDefault()
 }
 
-function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
+function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): boolean {
   const target = list.querySelector('[aria-selected="true"]')
-  if (!target) return
+  if (!target) return false
   fireCommitEvent(target)
+  return true
 }
 
 function fireCommitEvent(target: Element): void {
@@ -95,4 +106,21 @@ export function navigate(
       el.setAttribute('aria-selected', 'false')
     }
   }
+}
+
+function clearSelection(list): void {
+  const target = list.querySelector('[aria-selected="true"]')
+  if (!target) return
+  target.setAttribute('aria-selected', 'false')
+}
+
+function trackComposition(event: Event): void {
+  const input = event.currentTarget
+  if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
+  isComposing = event.type === 'compositionstart'
+
+  const list = document.getElementById(input.getAttribute('aria-owns') || '')
+  if (!list) return
+
+  clearSelection(list)
 }

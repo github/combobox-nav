@@ -46,6 +46,7 @@ describe('combobox-nav', function() {
           <li><del>BB-8</del></li>
           <li id="hubot" role="option">Hubot</li>
           <li id="r2-d2" role="option">R2-D2</li>
+          <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
         </ul>
       `
       comboboxNav.install(document.querySelector('input'), document.querySelector('ul'))
@@ -79,18 +80,23 @@ describe('combobox-nav', function() {
       assert.equal(options[3].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
 
+      press(input, 'n', true)
+      assert.equal(options[4].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'wall-e')
+      press(input, 'Enter')
+
       press(input, 'p', true)
-      assert.equal(options[2].getAttribute('aria-selected'), 'true')
-      assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
+      assert.equal(options[3].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
 
       press(input, 'ArrowUp')
-      assert.equal(options[0].getAttribute('aria-selected'), 'true')
-      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
+      assert.equal(options[2].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
 
       press(input, 'Enter')
       assert.equal(expectedTargets.length, 2)
       assert.equal(expectedTargets[0], 'hubot')
-      assert.equal(expectedTargets[1], 'baymax')
+      assert.equal(expectedTargets[1], 'hubot')
     })
 
     it('fires commit events on click', function() {

@@ -69,7 +69,7 @@ function commitWithElement(event: MouseEvent) {
 
 function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): boolean {
   const target = list.querySelector('[aria-selected="true"]')
-  if (!target) return false
+  if (!target || target.getAttribute('aria-disabled') === 'true') return false
   fireCommitEvent(target)
   return true
 }

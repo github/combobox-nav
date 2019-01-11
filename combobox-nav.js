@@ -63,13 +63,15 @@ function commitWithElement(event: MouseEvent) {
   if (!(event.target instanceof Element)) return
   const target = event.target.closest('[role="option"]')
   if (!target) return
-  fireCommitEvent(target)
   event.preventDefault()
+  if (target.getAttribute('aria-disabled') === 'true') return
+  fireCommitEvent(target)
 }
 
 function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): boolean {
   const target = list.querySelector('[aria-selected="true"]')
-  if (!target || target.getAttribute('aria-disabled') === 'true') return false
+  if (!target) return false
+  if (target.getAttribute('aria-disabled') === 'true') return true
   fireCommitEvent(target)
   return true
 }

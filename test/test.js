@@ -2,6 +2,10 @@ function press(input, key, ctrlKey) {
   input.dispatchEvent(new KeyboardEvent('keydown', {key, ctrlKey}))
 }
 
+function click(element) {
+  element.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+}
+
 describe('combobox-nav', function() {
   describe('with API', function() {
     beforeEach(function() {
@@ -84,6 +88,7 @@ describe('combobox-nav', function() {
       assert.equal(options[4].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'wall-e')
       press(input, 'Enter')
+      click(options[4])
 
       press(input, 'p', true)
       assert.equal(options[3].getAttribute('aria-selected'), 'true')
@@ -107,9 +112,9 @@ describe('combobox-nav', function() {
         expectedTargets.push(target.id)
       })
 
-      options[2].dispatchEvent(new MouseEvent('click', {bubbles: true}))
-      options[1].dispatchEvent(new MouseEvent('click', {bubbles: true}))
-      options[0].dispatchEvent(new MouseEvent('click', {bubbles: true}))
+      click(options[2])
+      click(options[1])
+      click(options[0])
 
       assert.equal(expectedTargets.length, 2)
       assert.equal(expectedTargets[0], 'hubot')

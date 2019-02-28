@@ -51,6 +51,7 @@ describe('combobox-nav', function() {
           <li id="hubot" role="option">Hubot</li>
           <li id="r2-d2" role="option">R2-D2</li>
           <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
+          <li><a href="#wall-e" role="option">Wall-E</a></li>
         </ul>
       `
       comboboxNav.install(document.querySelector('input'), document.querySelector('ul'))
@@ -119,6 +120,17 @@ describe('combobox-nav', function() {
       assert.equal(expectedTargets.length, 2)
       assert.equal(expectedTargets[0], 'hubot')
       assert.equal(expectedTargets[1], 'baymax')
+    })
+
+    it('fires event and follows the link on click', function() {
+      let eventFired = false
+      document.addEventListener('combobox-commit', function() {
+        eventFired = true
+      })
+
+      click(document.querySelectorAll('[role=option]')[4])
+      assert(eventFired)
+      assert.equal(window.location.hash, '#wall-e')
     })
   })
 })

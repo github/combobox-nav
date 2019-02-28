@@ -3,7 +3,7 @@ function press(input, key, ctrlKey) {
 }
 
 function click(element) {
-  element.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+  element.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
 }
 
 describe('combobox-nav', function() {

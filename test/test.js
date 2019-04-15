@@ -132,5 +132,20 @@ describe('combobox-nav', function() {
       assert(eventFired)
       assert.equal(window.location.hash, '#wall-e')
     })
+
+    it('clears aria-activedescendant and sets aria-selected=false when cleared', function() {
+      const input = document.querySelector('input')
+      const list = document.querySelector('ul')
+      const options = document.querySelectorAll('li')
+
+      press(input, 'ArrowDown')
+      assert.equal(options[0].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
+
+      comboboxNav.clearSelection(input, list)
+
+      assert.equal(options[0].getAttribute('aria-selected'), 'false')
+      assert.equal(input.hasAttribute('aria-activedescendant'), false)
+    })
   })
 })

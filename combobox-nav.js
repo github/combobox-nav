@@ -34,7 +34,7 @@ function keyboardBindings(event: KeyboardEvent) {
       }
       break
     case 'Escape':
-      clearSelection(list)
+      clearSelection(input, list)
       break
     case 'ArrowDown':
       navigate(input, list, 1)
@@ -109,7 +109,8 @@ export function navigate(
   }
 }
 
-function clearSelection(list): void {
+export function clearSelection(input: HTMLElement | HTMLInputElement, list: HTMLElement): void {
+  input.removeAttribute('aria-activedescendant')
   const target = list.querySelector('[aria-selected="true"]')
   if (!target) return
   target.setAttribute('aria-selected', 'false')
@@ -123,5 +124,5 @@ function trackComposition(event: Event): void {
   const list = document.getElementById(input.getAttribute('aria-owns') || '')
   if (!list) return
 
-  clearSelection(list)
+  clearSelection(input, list)
 }

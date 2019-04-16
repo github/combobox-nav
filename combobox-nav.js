@@ -109,7 +109,7 @@ export function navigate(
   }
 }
 
-export function clearSelection(input: HTMLElement | HTMLInputElement, list: HTMLElement): void {
+export function clearSelection(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
   input.removeAttribute('aria-activedescendant')
   const target = list.querySelector('[aria-selected="true"]')
   if (!target) return

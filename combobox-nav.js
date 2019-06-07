@@ -111,9 +111,9 @@ export function navigate(
 
 export function clearSelection(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
   input.removeAttribute('aria-activedescendant')
-  const target = list.querySelector('[aria-selected="true"]')
-  if (!target) return
-  target.setAttribute('aria-selected', 'false')
+  for (const el of list.querySelectorAll('[aria-selected="true"]')) {
+    el.setAttribute('aria-selected', 'false')
+  }
 }
 
 function trackComposition(event: Event): void {

@@ -11,10 +11,10 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "eslint combobox-nav.js test/ && flow check",
+    "lint": "eslint src/ test/ && flow check",
     "prebuild": "npm run clean && npm run lint && mkdir dist",
-    "build-umd": "BABEL_ENV=umd babel combobox-nav.js -o dist/combobox-nav.umd.js && cp combobox-nav.js.flow dist/combobox-nav.umd.js.flow",
-    "build-esm": "BABEL_ENV=esm babel combobox-nav.js -o dist/combobox-nav.esm.js && cp combobox-nav.js.flow dist/combobox-nav.esm.js.flow",
+    "build-umd": "BABEL_ENV=umd babel src/combobox-nav.js -o dist/combobox-nav.umd.js && cp src/combobox-nav.js.flow dist/combobox-nav.umd.js.flow",
+    "build-esm": "BABEL_ENV=esm babel src/combobox-nav.js -o dist/combobox-nav.esm.js && cp src/combobox-nav.js.flow dist/combobox-nav.esm.js.flow",
     "build": "npm run build-umd && npm run build-esm",
     "test": "karma start test/karma.config.js",
     "pretest": "npm run build",

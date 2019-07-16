@@ -1,5 +1,7 @@
 /* @flow strict */
 
+import {scrollTo} from './scroll'
+
 export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
   input.addEventListener('compositionstart', trackComposition)
   input.addEventListener('compositionend', trackComposition)
@@ -103,6 +105,7 @@ export function navigate(
     if (target === el) {
       input.setAttribute('aria-activedescendant', target.id)
       target.setAttribute('aria-selected', 'true')
+      scrollTo(list, target)
     } else {
       el.setAttribute('aria-selected', 'false')
     }

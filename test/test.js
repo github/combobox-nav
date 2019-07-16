@@ -147,5 +147,26 @@ describe('combobox-nav', function() {
       assert.equal(options[0].getAttribute('aria-selected'), 'false')
       assert.equal(input.hasAttribute('aria-activedescendant'), false)
     })
+
+    it('scrolls when the selected item is not in view', function() {
+      const input = document.querySelector('input')
+      const list = document.querySelector('ul')
+      list.style.overflow = 'auto'
+      list.style.height = '18px'
+      list.style.position = 'relative'
+      const options = document.querySelectorAll('li')
+      assert.equal(list.scrollTop, 0)
+
+      press(input, 'ArrowDown')
+      assert.equal(options[0].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
+      assert.equal(list.scrollTop, 0)
+
+      press(input, 'ArrowDown')
+
+      assert.equal(options[2].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
+      assert.equal(list.scrollTop, 36)
+    })
   })
 })

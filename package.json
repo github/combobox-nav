@@ -1,7 +1,7 @@
 {
   "name": "@github/combobox-nav",
   "description": "Attach combobox navigation behavior to an input.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "main": "dist/combobox-nav.umd.js",
   "module": "dist/combobox-nav.esm.js",
   "license": "MIT",

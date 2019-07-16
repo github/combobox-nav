@@ -28,7 +28,7 @@ $ npm install @github/combobox-nav
 ### JS
 
 ```js
-import {install, navigate, uninstall} from '@github/combobox-nav'
+import {clearSelection, install, navigate, uninstall} from '@github/combobox-nav'
 const input = document.querySelector('#robot-input')
 const list = document.querySelector('#list-id')
 
@@ -36,6 +36,8 @@ const list = document.querySelector('#list-id')
 install(input, list)
 // To move selection to the nth+1 item in the list
 navigate(input, list, 1)
+// To clear selection
+clearSelection(input, list)
 // To uninstall this behavior
 uninstall(input, list)
 ```

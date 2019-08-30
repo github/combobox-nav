@@ -16,7 +16,8 @@
     "build": "rollup -c && cp src/combobox-nav.js.flow dist/combobox-nav.esm.js.flow && cp src/combobox-nav.js.flow dist/combobox-nav.umd.js.flow",
     "test": "karma start test/karma.config.js",
     "pretest": "npm run build",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "postpublish": "npm publish --ignore-scripts --@github:registry='https://npm.pkg.github.com'"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

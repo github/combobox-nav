@@ -4,10 +4,12 @@
   "version": "0.3.3",
   "main": "dist/combobox-nav.umd.js",
   "module": "dist/combobox-nav.esm.js",
+  "types": "index.d.ts",
   "license": "MIT",
   "repository": "github/combobox-nav",
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ],
   "scripts": {
     "clean": "rm -rf dist",

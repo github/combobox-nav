@@ -75,23 +75,23 @@ describe('combobox-nav', function() {
       assert.equal(options[0].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
 
-      press(input, 'n', true)
+      press(input, 'ArrowDown')
       assert.equal(options[2].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
 
       press(input, 'Enter')
 
-      press(input, 'n', true)
+      press(input, 'ArrowDown')
       assert.equal(options[3].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
 
-      press(input, 'n', true)
+      press(input, 'ArrowDown')
       assert.equal(options[4].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'wall-e')
       press(input, 'Enter')
       click(options[4])
 
-      press(input, 'p', true)
+      press(input, 'ArrowUp')
       assert.equal(options[3].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
 

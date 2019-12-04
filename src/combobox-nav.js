@@ -90,8 +90,8 @@ export function navigate(
   list: HTMLElement,
   indexDiff: -1 | 1 = 1
 ): void {
-  const focusEl = list.querySelector('[aria-selected="true"]')
-  const els = Array.from(list.querySelectorAll('[role="option"]'))
+  const focusEl = list.querySelector('[aria-selected="true"]:not([hidden])')
+  const els = Array.from(list.querySelectorAll('[role="option"]:not([hidden])'))
   const focusIndex = els.indexOf(focusEl)
   let indexOfItem = indexDiff === 1 ? 0 : els.length - 1
   if (focusEl && focusIndex >= 0) {

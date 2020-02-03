@@ -85,13 +85,17 @@ function fireCommitEvent(target: Element): void {
   )
 }
 
+function visible(el): boolean {
+  return !el.hidden && (!el.type || el.type !== 'hidden') && (el.offsetWidth > 0 || el.offsetHeight > 0)
+}
+
 export function navigate(
   input: HTMLTextAreaElement | HTMLInputElement,
   list: HTMLElement,
   indexDiff: -1 | 1 = 1
 ): void {
-  const focusEl = list.querySelector('[aria-selected="true"]')
-  const els = Array.from(list.querySelectorAll('[role="option"]'))
+  const focusEl = Array.from(list.querySelectorAll('[aria-selected="true"]')).filter(visible)[0]
+  const els = Array.from(list.querySelectorAll('[role="option"]')).filter(visible)
   const focusIndex = els.indexOf(focusEl)
   let indexOfItem = indexDiff === 1 ? 0 : els.length - 1
   if (focusEl && focusIndex >= 0) {

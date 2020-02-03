@@ -50,6 +50,7 @@ describe('combobox-nav', function() {
           <li><del>BB-8</del></li>
           <li id="hubot" role="option">Hubot</li>
           <li id="r2-d2" role="option">R2-D2</li>
+          <li id="johnny-5" hidden role="option">Johnny 5</li>
           <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
           <li><a href="#wall-e" role="option">Wall-E</a></li>
         </ul>
@@ -86,10 +87,10 @@ describe('combobox-nav', function() {
       assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
 
       press(input, 'ArrowDown')
-      assert.equal(options[4].getAttribute('aria-selected'), 'true')
+      assert.equal(options[5].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'wall-e')
       press(input, 'Enter')
-      click(options[4])
+      click(options[5])
 
       press(input, 'ArrowUp')
       assert.equal(options[3].getAttribute('aria-selected'), 'true')
@@ -128,7 +129,7 @@ describe('combobox-nav', function() {
         eventFired = true
       })
 
-      click(document.querySelectorAll('[role=option]')[4])
+      click(document.querySelectorAll('[role=option]')[5])
       assert(eventFired)
       assert.equal(window.location.hash, '#wall-e')
     })

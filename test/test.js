@@ -187,7 +187,7 @@ describe('combobox-nav', function() {
 
     it('fires event and input is checked', async function() {
       const listener = new Promise(resolve => {
-        document.addEventListener('combobox-commit', () => {
+        document.addEventListener('combobox-committed', () => {
           assert(
             document.querySelector('input[value="Hubot"]').checked,
             'input should be checked when combobox-commit is fired'

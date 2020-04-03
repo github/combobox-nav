@@ -66,7 +66,8 @@ function commitWithElement(event: MouseEvent) {
   const target = event.target.closest('[role="option"]')
   if (!target) return
   if (target.getAttribute('aria-disabled') === 'true') return
-  fireCommitEvent(target)
+  fireCommitEvent(target, 'combobox-commit')
+  setTimeout(() => fireCommitEvent(target, 'combobox-committed'), 0)
 }
 
 function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): boolean {
@@ -77,9 +78,9 @@ function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement
   return true
 }
 
-function fireCommitEvent(target: Element): void {
+function fireCommitEvent(target: Element, event: string): void {
   target.dispatchEvent(
-    new CustomEvent('combobox-commit', {
+    new CustomEvent(event, {
       bubbles: true
     })
   )

@@ -44,13 +44,21 @@ uninstall(input, list)
 
 ## Events
 
-A bubbling `combobox-commit` event is fired on the list element when an option is selected via keyboard or click.
-
-For example, autocomplete when an option is selected:
+- `combobox-commit` (bubbles) - fired on the `role="option"` element when it is activated.
+- `combobox-committed` (bubbles) - fired on the `role="option"` element on the next tick of the activation event. This is useful for when the activation comes with side-effects like state changes that need to inspect afterward the fact.
 
 ```js
+list.addEventListener('click', function(event) {
+  noneSelectedMessage.hidden = true
+})
+
 list.addEventListener('combobox-commit', function(event) {
   console.log('Element selected: ', event.target)
+  if (!noneSelectedMessage.hidden) console.log('Message is not hidden.')
+})
+
+list.addEventListener('combobox-committed', function(event) {
+  if (noneSelectedMessage.hidden) console.log('Message is hidden now.')
 })
 ```
 

@@ -21,13 +21,27 @@
       <li><a id="wall-e" href="#wall-e" role="option">Wall-E</a></li>
     </ul>
   </form>
+  <div id="message">None selected. Please use type and select an option using keyboard.</div>
   <pre class="events"></pre>
   <script type="text/javascript">
-    comboboxNav.install(document.querySelector('input'), document.querySelector('ul'))
-
     const events = document.querySelector('.events')
-    document.addEventListener('combobox-commit', function(event) {
+    const input = document.querySelector('input')
+    const list = document.querySelector('ul')
+    const noneSelectedMessage = document.querySelector('#message')
+    comboboxNav.install(input, list)
+
+    list.addEventListener('click', function (event) {
+      noneSelectedMessage.hidden = true
+    })
+
+    list.addEventListener('combobox-commit', function (event) {
       events.append(`combobox-commit event on ${event.target.textContent}\n`)
+      console.log('Element selected: ', event.target)
+      if (!noneSelectedMessage.hidden) console.log('Message is not hidden.')
+    })
+
+    list.addEventListener('combobox-committed', function (event) {
+      if (noneSelectedMessage.hidden) console.log('Message is hidden now.')
     })
   </script>
 </body>

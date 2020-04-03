@@ -166,4 +166,37 @@ describe('combobox-nav', function() {
       assert.equal(list.scrollTop, 36)
     })
   })
+
+  describe('with label/input as options', function() {
+    beforeEach(function() {
+      document.body.innerHTML = `
+        <input aria-owns="list-id" role="combobox" type="text">
+        <div id="list-id">
+          <label id="baymax" role="option"><input type="checkbox" value="Baymax" hidden> Baymax</label>
+          <label id="hubot" role="option"><input type="checkbox" value="Hubot" hidden> Hubot</label>
+          <label id="r2-d2" role="option"><input type="checkbox" value="R2-D2" hidden> R2-D2</label>
+        </div>
+      `
+      comboboxNav.install(document.querySelector('input'), document.querySelector('#list-id'))
+    })
+
+    afterEach(function() {
+      comboboxNav.uninstall(document.querySelector('input'), document.querySelector('#list-id'))
+      document.body.innerHTML = ''
+    })
+
+    it('fires event and input is checked', async function() {
+      const listener = new Promise(resolve => {
+        document.addEventListener('combobox-commit', () => {
+          assert(
+            document.querySelector('input[value="Hubot"]').checked,
+            'input should be checked when combobox-commit is fired'
+          )
+          resolve()
+        })
+      })
+      document.querySelectorAll('[role=option]')[1].click()
+      await listener
+    })
+  })
 })

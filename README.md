@@ -54,6 +54,10 @@ list.addEventListener('combobox-commit', function(event) {
 })
 ```
 
+**⚠ Note:** When using `<label>` + `<input>` as options, please listen on `change` instead of `combobox-commit`.
+
+When a label is clicked on, `click` event is fired from both `<label>` and its associated input `label.control`. Since combobox does not know about the control, `combobox-commit` cannot be used as an indicator of the item's selection state.
+
 ## Development
 
 ```

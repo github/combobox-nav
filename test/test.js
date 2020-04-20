@@ -10,7 +10,7 @@ describe('combobox-nav', function() {
   describe('with API', function() {
     beforeEach(function() {
       document.body.innerHTML = `
-        <input aria-owns="list-id" role="combobox" type="text">
+        <input aria-controls="list-id" role="combobox" type="text">
         <ul role="listbox" id="list-id">
           <li id="baymax" role="option">Baymax</li>
           <li><del>BB-8</del></li>
@@ -44,7 +44,7 @@ describe('combobox-nav', function() {
   describe('with default setup', function() {
     beforeEach(function() {
       document.body.innerHTML = `
-        <input aria-owns="list-id" role="combobox" type="text">
+        <input aria-controls="list-id" role="combobox" type="text">
         <ul role="listbox" id="list-id">
           <li id="baymax" role="option">Baymax</li>
           <li><del>BB-8</del></li>

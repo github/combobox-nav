@@ -25,7 +25,7 @@ function keyboardBindings(event: KeyboardEvent) {
   const input = event.currentTarget
   if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
   if (isComposing) return
-  const list = document.getElementById(input.getAttribute('aria-owns') || '')
+  const list = document.getElementById(input.getAttribute('aria-controls') || '')
   if (!list) return
 
   switch (event.key) {
@@ -128,7 +128,7 @@ function trackComposition(event: Event): void {
   if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
   isComposing = event.type === 'compositionstart'
 
-  const list = document.getElementById(input.getAttribute('aria-owns') || '')
+  const list = document.getElementById(input.getAttribute('aria-controls') || '')
   if (!list) return
 
   clearSelection(input, list)

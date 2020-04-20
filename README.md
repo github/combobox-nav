@@ -1,6 +1,6 @@
 # Combobox Navigation
 
-Attach [combobox navigation behavior](https://www.w3.org/TR/wai-aria-practices/examples/combobox/aria1.1pattern/listbox-combo.html) to `<input>` or `<textarea>`.
+Attach [combobox navigation behavior (ARIA 1.2)](https://www.w3.org/TR/wai-aria-1.2/#combobox) to `<input>`.
 
 ## Installation
 
@@ -15,15 +15,17 @@ $ npm install @github/combobox-nav
 ```html
 <label>
   Robot
-  <input id="robot-input" aria-owns="list-id" role="combobox" type="text">
+  <input id="robot-input" aria-controls="list-id" role="combobox" type="text" aria-expanded="false">
 </label>
-<ul role="listbox" id="list-id">
+<ul role="listbox" id="list-id" hidden>
   <li id="baymax" role="option">Baymax</li>
   <li><del>BB-8</del></li><!-- `role=option` needs to be present for item to be selectable -->
   <li id="hubot" role="option">Hubot</li>
   <li id="r2-d2" role="option">R2-D2</li>
 </ul>
 ```
+
+The combobox navigation pattern does not control list visibility. Please [refer to the ARIA spec](https://www.w3.org/TR/wai-aria-1.2/#combobox) for more requirements around `aria-expanded` and `aria-autocomplete`.
 
 ### JS
 

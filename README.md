@@ -15,7 +15,7 @@ $ npm install @github/combobox-nav
 ```html
 <label>
   Robot
-  <input id="robot-input" aria-controls="list-id" role="combobox" type="text" aria-expanded="false">
+  <input id="robot-input" type="text">
 </label>
 <ul role="listbox" id="list-id" hidden>
   <li id="baymax" role="option">Baymax</li>

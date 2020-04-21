@@ -10,7 +10,7 @@ describe('combobox-nav', function() {
   describe('with API', function() {
     beforeEach(function() {
       document.body.innerHTML = `
-        <input aria-controls="list-id" role="combobox" type="text">
+        <input type="text">
         <ul role="listbox" id="list-id">
           <li id="baymax" role="option">Baymax</li>
           <li><del>BB-8</del></li>
@@ -29,6 +29,10 @@ describe('combobox-nav', function() {
       const list = document.querySelector('ul')
       comboboxNav.install(input, list)
 
+      assert.equal(input.getAttribute('role'), 'combobox')
+      assert.equal(input.getAttribute('aria-expanded'), 'false')
+      assert.equal(input.getAttribute('aria-controls'), 'list-id')
+
       press(input, 'ArrowDown')
       assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
       comboboxNav.navigate(input, list, 1)
@@ -44,7 +48,7 @@ describe('combobox-nav', function() {
   describe('with default setup', function() {
     beforeEach(function() {
       document.body.innerHTML = `
-        <input aria-controls="list-id" role="combobox" type="text">
+        <input type="text">
         <ul role="listbox" id="list-id">
           <li id="baymax" role="option">Baymax</li>
           <li><del>BB-8</del></li>

@@ -3,6 +3,14 @@
 import {scrollTo} from './scroll'
 
 export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
+  if (!list.id) {
+    list.id = `combobox-${Math.random()
+      .toString()
+      .slice(2, 6)}`
+  }
+  input.setAttribute('role', 'combobox')
+  input.setAttribute('aria-controls', list.id)
+  if (!input.hasAttribute('aria-expanded')) input.setAttribute('aria-expanded', 'false')
   input.addEventListener('compositionstart', trackComposition)
   input.addEventListener('compositionend', trackComposition)
   input.addEventListener('keydown', keyboardBindings)
@@ -11,6 +19,9 @@ export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTM
 
 export function uninstall(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
   input.removeAttribute('aria-activedescendant')
+  input.removeAttribute('role')
+  input.removeAttribute('aria-controls')
+  input.removeAttribute('aria-expanded')
   input.removeEventListener('compositionstart', trackComposition)
   input.removeEventListener('compositionend', trackComposition)
   input.removeEventListener('keydown', keyboardBindings)

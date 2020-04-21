@@ -25,7 +25,7 @@ $ npm install @github/combobox-nav
 </ul>
 ```
 
-The combobox navigation pattern does not control list visibility. Please [refer to the ARIA spec](https://www.w3.org/TR/wai-aria-1.2/#combobox) for more requirements around `aria-expanded` and `aria-autocomplete`.
+`combobox-nav` will set all the necessary ARIA attributes on the elements at time of installation. However, since it does not control list visibility, please [refer to the ARIA spec](https://www.w3.org/TR/wai-aria-1.2/#combobox) for more requirements around `aria-expanded` and `aria-autocomplete`.
 
 ### JS
 

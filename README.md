@@ -25,23 +25,26 @@ $ npm install @github/combobox-nav
 </ul>
 ```
 
-`combobox-nav` will set most of the necessary ARIA attributes on the elements at time of installation. However, since it does not control list visibility, please [refer to the ARIA spec](https://www.w3.org/TR/wai-aria-1.2/#combobox) for more requirements around `aria-expanded` and `aria-autocomplete`.
-
 ### JS
 
 ```js
-import {clearSelection, install, navigate, uninstall} from '@github/combobox-nav'
+import {clearSelection, install, navigate, start, stop, uninstall} from '@github/combobox-nav'
 const input = document.querySelector('#robot-input')
 const list = document.querySelector('#list-id')
 
-// To install this behavior
+// To install combobox pattern on a given input and listbox
 install(input, list)
+// To start intercepting keyboard events for navigation
+start(input)
+// To stop intercepting keyboard events for navigation
+stop(input)
+
 // To move selection to the nth+1 item in the list
 navigate(input, list, 1)
-// To clear selection
+// To reset selection
 clearSelection(input, list)
-// To uninstall this behavior
-uninstall(input, list)
+// To uninstall combobox pattern from the input
+uninstall(input)
 ```
 
 ## Events

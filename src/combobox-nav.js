@@ -2,42 +2,70 @@
 
 import {scrollTo} from './scroll'
 
+const comboboxStates = new WeakMap()
+
 export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
+  if (comboboxStates.get(input)) {
+    uninstall(input)
+  }
+
   if (!list.id) {
     list.id = `combobox-${Math.random()
       .toString()
       .slice(2, 6)}`
   }
+
   input.setAttribute('role', 'combobox')
   input.setAttribute('aria-controls', list.id)
-  if (!input.hasAttribute('aria-expanded')) input.setAttribute('aria-expanded', 'false')
+  input.setAttribute('aria-expanded', 'false')
+  input.setAttribute('aria-autocomplete', 'list')
+  comboboxStates.set(input, {list, isComposing: false})
+}
+
+export function uninstall(input: HTMLTextAreaElement | HTMLInputElement): void {
+  const {list} = comboboxStates.get(input) || {}
+  if (!list) return
+  clearSelection(input, list)
+  stop(input)
+
+  input.removeAttribute('role')
+  input.removeAttribute('aria-controls')
+  input.removeAttribute('aria-expanded')
+  input.removeAttribute('aria-autocomplete')
+  comboboxStates.delete(input)
+}
+
+export function start(input: HTMLTextAreaElement | HTMLInputElement): void {
+  const {list} = comboboxStates.get(input) || {}
+  if (!list) return
+
+  input.setAttribute('aria-expanded', 'true')
   input.addEventListener('compositionstart', trackComposition)
   input.addEventListener('compositionend', trackComposition)
   input.addEventListener('keydown', keyboardBindings)
   list.addEventListener('click', commitWithElement)
 }
 
-export function uninstall(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
+export function stop(input: HTMLTextAreaElement | HTMLInputElement): void {
+  const {list} = comboboxStates.get(input) || {}
+  if (!list) return
+
   input.removeAttribute('aria-activedescendant')
-  input.removeAttribute('role')
-  input.removeAttribute('aria-controls')
-  input.removeAttribute('aria-expanded')
+  input.setAttribute('aria-expanded', 'false')
   input.removeEventListener('compositionstart', trackComposition)
   input.removeEventListener('compositionend', trackComposition)
   input.removeEventListener('keydown', keyboardBindings)
   list.removeEventListener('click', commitWithElement)
 }
 
-let isComposing = false
 const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
 
 function keyboardBindings(event: KeyboardEvent) {
   if (event.shiftKey || event.metaKey || event.altKey) return
   const input = event.currentTarget
   if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
-  if (isComposing) return
-  const list = document.getElementById(input.getAttribute('aria-controls') || '')
-  if (!list) return
+  const {list, isComposing} = comboboxStates.get(input) || {}
+  if (!list || isComposing) return
 
   switch (event.key) {
     case 'Enter':
@@ -137,7 +165,9 @@ export function clearSelection(input: HTMLTextAreaElement | HTMLInputElement, li
 function trackComposition(event: Event): void {
   const input = event.currentTarget
   if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
-  isComposing = event.type === 'compositionstart'
+  const state = comboboxStates.get(input)
+  if (!state) return
+  state.isComposing = event.type === 'compositionstart'
 
   const list = document.getElementById(input.getAttribute('aria-controls') || '')
   if (!list) return

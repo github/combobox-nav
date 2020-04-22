@@ -8,6 +8,7 @@ function click(element) {
 
 describe('combobox-nav', function() {
   describe('with API', function() {
+    let input, list
     beforeEach(function() {
       document.body.innerHTML = `
         <input type="text">
@@ -18,34 +19,45 @@ describe('combobox-nav', function() {
           <li id="r2-d2" role="option">R2-D2</li>
         </ul>
       `
+      input = document.querySelector('input')
+      list = document.querySelector('ul')
     })
 
     afterEach(function() {
       document.body.innerHTML = ''
     })
 
-    it('installs, navigates, and uninstalls', function() {
-      const input = document.querySelector('input')
-      const list = document.querySelector('ul')
+    it('installs, starts, navigates, stops, and uninstalls', function() {
       comboboxNav.install(input, list)
-
       assert.equal(input.getAttribute('role'), 'combobox')
       assert.equal(input.getAttribute('aria-expanded'), 'false')
       assert.equal(input.getAttribute('aria-controls'), 'list-id')
+      assert.equal(input.getAttribute('aria-autocomplete'), 'list')
+
+      comboboxNav.start(input)
+      assert.equal(input.getAttribute('aria-expanded'), 'true')
 
       press(input, 'ArrowDown')
       assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
       comboboxNav.navigate(input, list, 1)
       assert.equal(list.children[2].getAttribute('aria-selected'), 'true')
 
-      comboboxNav.uninstall(input, list)
-
+      comboboxNav.stop(input)
       press(input, 'ArrowDown')
       assert.equal(list.children[2].getAttribute('aria-selected'), 'true')
+
+      comboboxNav.uninstall(input)
+      assert.equal(list.children[2].getAttribute('aria-selected'), 'false')
+
+      assert(!input.hasAttribute('role'))
+      assert(!input.hasAttribute('aria-expanded'))
+      assert(!input.hasAttribute('aria-controls'))
+      assert(!input.hasAttribute('aria-autocomplete'))
     })
   })
 
   describe('with default setup', function() {
+    let input, list, options
     beforeEach(function() {
       document.body.innerHTML = `
         <input type="text">
@@ -59,17 +71,19 @@ describe('combobox-nav', function() {
           <li><a href="#wall-e" role="option">Wall-E</a></li>
         </ul>
       `
-      comboboxNav.install(document.querySelector('input'), document.querySelector('ul'))
+      input = document.querySelector('input')
+      list = document.querySelector('ul')
+      options = document.querySelectorAll('li')
+      comboboxNav.install(input, list)
+      comboboxNav.start(input)
     })
 
     afterEach(function() {
-      comboboxNav.uninstall(document.querySelector('input'), document.querySelector('ul'))
+      comboboxNav.uninstall(document.querySelector('input'))
       document.body.innerHTML = ''
     })
 
     it('updates attributes on keyboard events', function() {
-      const input = document.querySelector('input')
-      const options = document.querySelectorAll('li')
       const expectedTargets = []
 
       document.addEventListener('combobox-commit', function({target}) {
@@ -111,7 +125,6 @@ describe('combobox-nav', function() {
     })
 
     it('fires commit events on click', function() {
-      const options = document.querySelectorAll('li')
       const expectedTargets = []
 
       document.addEventListener('combobox-commit', function({target}) {
@@ -139,10 +152,6 @@ describe('combobox-nav', function() {
     })
 
     it('clears aria-activedescendant and sets aria-selected=false when cleared', function() {
-      const input = document.querySelector('input')
-      const list = document.querySelector('ul')
-      const options = document.querySelectorAll('li')
-
       press(input, 'ArrowDown')
       assert.equal(options[0].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
@@ -154,12 +163,9 @@ describe('combobox-nav', function() {
     })
 
     it('scrolls when the selected item is not in view', function() {
-      const input = document.querySelector('input')
-      const list = document.querySelector('ul')
       list.style.overflow = 'auto'
       list.style.height = '18px'
       list.style.position = 'relative'
-      const options = document.querySelectorAll('li')
       assert.equal(list.scrollTop, 0)
 
       press(input, 'ArrowDown')

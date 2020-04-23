@@ -1,4 +1,18 @@
 {
-  "extends": ["plugin:github/es6", "plugin:github/browser", "plugin:github/flow"],
-  "parser": "babel-eslint"
+  "extends": [
+    "plugin:github/browser",
+    "plugin:github/es6",
+    "plugin:github/typescript"
+  ],
+  "globals": {
+    "Combobox": "readable"
+  },
+  "overrides": [
+    {
+      "files": "test/**/*.js",
+      "rules": {
+        "github/unescaped-html-literal": "off"
+      }
+    }
+  ]
 }

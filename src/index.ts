@@ -1,7 +1,3 @@
-/* @flow strict */
-
-import {scrollTo} from './scroll'
-
 const comboboxStates = new WeakMap()
 
 export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
@@ -44,7 +40,7 @@ export function start(input: HTMLTextAreaElement | HTMLInputElement): void {
   input.setAttribute('aria-expanded', 'true')
   input.addEventListener('compositionstart', trackComposition)
   input.addEventListener('compositionend', trackComposition)
-  input.addEventListener('keydown', keyboardBindings)
+  ;(input as HTMLInputElement).addEventListener('keydown', keyboardBindings)
   list.addEventListener('click', commitWithElement)
 }
 
@@ -56,7 +52,7 @@ export function stop(input: HTMLTextAreaElement | HTMLInputElement): void {
   input.setAttribute('aria-expanded', 'false')
   input.removeEventListener('compositionstart', trackComposition)
   input.removeEventListener('compositionend', trackComposition)
-  input.removeEventListener('keydown', keyboardBindings)
+  ;(input as HTMLInputElement).removeEventListener('keydown', keyboardBindings)
   list.removeEventListener('click', commitWithElement)
 }
 
@@ -111,7 +107,7 @@ function commitWithElement(event: MouseEvent) {
 }
 
 function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): boolean {
-  const target = list.querySelector('[aria-selected="true"]')
+  const target = list.querySelector<HTMLElement>('[aria-selected="true"]')
   if (!target) return false
   if (target.getAttribute('aria-disabled') === 'true') return true
   target.click()
@@ -119,15 +115,15 @@ function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement
 }
 
 function fireCommitEvent(target: Element): void {
-  target.dispatchEvent(
-    new CustomEvent('combobox-commit', {
-      bubbles: true
-    })
-  )
+  target.dispatchEvent(new CustomEvent('combobox-commit', {bubbles: true}))
 }
 
-function visible(el): boolean {
-  return !el.hidden && (!el.type || el.type !== 'hidden') && (el.offsetWidth > 0 || el.offsetHeight > 0)
+function visible(el: HTMLElement): boolean {
+  return (
+    !el.hidden &&
+    !(el instanceof HTMLInputElement && el.type === 'hidden') &&
+    (el.offsetWidth > 0 || el.offsetHeight > 0)
+  )
 }
 
 export function navigate(
@@ -135,8 +131,8 @@ export function navigate(
   list: HTMLElement,
   indexDiff: -1 | 1 = 1
 ): void {
-  const focusEl = Array.from(list.querySelectorAll('[aria-selected="true"]')).filter(visible)[0]
-  const els = Array.from(list.querySelectorAll('[role="option"]')).filter(visible)
+  const focusEl = Array.from(list.querySelectorAll<HTMLElement>('[aria-selected="true"]')).filter(visible)[0]
+  const els = Array.from(list.querySelectorAll<HTMLElement>('[role="option"]')).filter(visible)
   const focusIndex = els.indexOf(focusEl)
   let indexOfItem = indexDiff === 1 ? 0 : els.length - 1
   if (focusEl && focusIndex >= 0) {
@@ -175,4 +171,18 @@ function trackComposition(event: Event): void {
   if (!list) return
 
   clearSelection(input, list)
+}
+
+function scrollTo(container: HTMLElement, target: HTMLElement) {
+  if (!inViewport(container, target)) {
+    container.scrollTop = target.offsetTop
+  }
+}
+
+function inViewport(container: HTMLElement, element: HTMLElement): boolean {
+  const scrollTop = container.scrollTop
+  const containerBottom = scrollTop + container.clientHeight
+  const top = element.offsetTop
+  const bottom = top + element.clientHeight
+  return top >= scrollTop && bottom <= containerBottom
 }

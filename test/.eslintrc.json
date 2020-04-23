@@ -1,13 +1,12 @@
 {
-  "rules": {
-    "flowtype/require-valid-file-annotation": "off"
+  "parser": "espree",
+  "parserOptions": {
+    "ecmaVersion": 8
   },
   "env": {
     "mocha": true
   },
   "globals": {
-    "assert": true,
-    "comboboxNav": true
-  },
-  "extends": "../.eslintrc.json"
+    "assert": true
+  }
 }

@@ -1,6 +1,6 @@
 # Combobox Navigation
 
-Attach [combobox navigation behavior](https://www.w3.org/TR/wai-aria-practices/examples/combobox/aria1.1pattern/listbox-combo.html) to `<input>` or `<textarea>`.
+Attach [combobox navigation behavior (ARIA 1.2)](https://www.w3.org/TR/wai-aria-1.2/#combobox) to `<input>`.
 
 ## Installation
 
@@ -15,9 +15,9 @@ $ npm install @github/combobox-nav
 ```html
 <label>
   Robot
-  <input id="robot-input" aria-owns="list-id" role="combobox" type="text">
+  <input id="robot-input" type="text">
 </label>
-<ul role="listbox" id="list-id">
+<ul role="listbox" id="list-id" hidden>
   <li id="baymax" role="option">Baymax</li>
   <li><del>BB-8</del></li><!-- `role=option` needs to be present for item to be selectable -->
   <li id="hubot" role="option">Hubot</li>
@@ -28,18 +28,23 @@ $ npm install @github/combobox-nav
 ### JS
 
 ```js
-import {clearSelection, install, navigate, uninstall} from '@github/combobox-nav'
+import {clearSelection, install, navigate, start, stop, uninstall} from '@github/combobox-nav'
 const input = document.querySelector('#robot-input')
 const list = document.querySelector('#list-id')
 
-// To install this behavior
+// install combobox pattern on a given input and listbox
 install(input, list)
-// To move selection to the nth+1 item in the list
+// when options appear, start intercepting keyboard events for navigation
+start(input)
+// when options disappear, stop intercepting keyboard events for navigation
+stop(input)
+
+// move selection to the nth+1 item in the list
 navigate(input, list, 1)
-// To clear selection
+// reset selection
 clearSelection(input, list)
-// To uninstall this behavior
-uninstall(input, list)
+// uninstall combobox pattern from the input
+uninstall(input)
 ```
 
 ## Events

@@ -11,19 +11,37 @@
   <form>
     <label>
       Least favorite robot
-      <input aria-owns="list-id" role="combobox" type="text">
+      <input aria-controls="list-id" role="combobox" type="text">
     </label>
-    <ul role="listbox" id="list-id">
+    <ul role="listbox" id="list-id" hidden>
       <li id="baymax" role="option">Baymax</li>
       <li id="bb-8" role="option" aria-disabled="true"><del>BB-8</del></li>
       <li id="hubot" role="option">Hubot</li>
       <li id="r2-d2" role="option">R2-D2</li>
-      <li><a id="wall-e" href="#wall-e" role="option">Wall-E</a></li>
+      <li role="presentation"><a id="wall-e" href="#wall-e" role="option">Wall-E</a></li>
     </ul>
   </form>
   <pre class="events"></pre>
   <script type="text/javascript">
-    comboboxNav.install(document.querySelector('input'), document.querySelector('ul'))
+    const input = document.querySelector('input')
+    const list = document.querySelector('ul')
+    comboboxNav.install(input, list)
+
+    function toggleList() {
+      const hidden = input.value.length === 0
+      if (hidden) {
+        comboboxNav.stop(input)
+      } else {
+        comboboxNav.start(input)
+      }
+      list.hidden = hidden
+    }
+    input.addEventListener('input', toggleList)
+    input.addEventListener('focus', toggleList)
+    input.addEventListener('blur', () => {
+      list.hidden = true
+      comboboxNav.stop(input)
+    })
 
     const events = document.querySelector('.events')
     document.addEventListener('combobox-commit', function(event) {

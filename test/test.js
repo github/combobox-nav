@@ -33,6 +33,7 @@ describe('combobox-nav', function() {
       assert.equal(input.getAttribute('aria-expanded'), 'false')
       assert.equal(input.getAttribute('aria-controls'), 'list-id')
       assert.equal(input.getAttribute('aria-autocomplete'), 'list')
+      assert.equal(input.getAttribute('aria-haspopup'), 'listbox')
 
       comboboxNav.start(input)
       assert.equal(input.getAttribute('aria-expanded'), 'true')
@@ -53,6 +54,7 @@ describe('combobox-nav', function() {
       assert(!input.hasAttribute('aria-expanded'))
       assert(!input.hasAttribute('aria-controls'))
       assert(!input.hasAttribute('aria-autocomplete'))
+      assert(!input.hasAttribute('aria-haspopup'))
     })
   })
 

@@ -1,5 +1,4 @@
-import {install, uninstall, stop, start, navigate, clearSelection} from '../dist/index.js'
-
+import Combobox from '../dist/index.js'
 function press(input, key, ctrlKey) {
   input.dispatchEvent(new KeyboardEvent('keydown', {key, ctrlKey}))
 }
@@ -30,26 +29,26 @@ describe('combobox-nav', function() {
     })
 
     it('installs, starts, navigates, stops, and uninstalls', function() {
-      install(input, list)
+      const combobox = new Combobox(input, list)
       assert.equal(input.getAttribute('role'), 'combobox')
       assert.equal(input.getAttribute('aria-expanded'), 'false')
       assert.equal(input.getAttribute('aria-controls'), 'list-id')
       assert.equal(input.getAttribute('aria-autocomplete'), 'list')
       assert.equal(input.getAttribute('aria-haspopup'), 'listbox')
 
-      start(input)
+      combobox.start()
       assert.equal(input.getAttribute('aria-expanded'), 'true')
 
       press(input, 'ArrowDown')
       assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
-      navigate(input, list, 1)
+      combobox.navigate(1)
       assert.equal(list.children[2].getAttribute('aria-selected'), 'true')
 
-      stop(input)
+      combobox.stop()
       press(input, 'ArrowDown')
       assert.equal(list.children[2].getAttribute('aria-selected'), 'true')
 
-      uninstall(input)
+      combobox.destroy()
       assert.equal(list.children[2].getAttribute('aria-selected'), 'false')
 
       assert(!input.hasAttribute('role'))
@@ -61,7 +60,7 @@ describe('combobox-nav', function() {
   })
 
   describe('with default setup', function() {
-    let input, list, options
+    let input, list, options, combobox
     beforeEach(function() {
       document.body.innerHTML = `
         <input type="text">
@@ -78,12 +77,13 @@ describe('combobox-nav', function() {
       input = document.querySelector('input')
       list = document.querySelector('ul')
       options = document.querySelectorAll('li')
-      install(input, list)
-      start(input)
+      combobox = new Combobox(input, list)
+      combobox.start()
     })
 
     afterEach(function() {
-      uninstall(document.querySelector('input'))
+      combobox.destroy()
+      combobox = null
       document.body.innerHTML = ''
     })
 
@@ -160,7 +160,7 @@ describe('combobox-nav', function() {
       assert.equal(options[0].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
 
-      clearSelection(input, list)
+      combobox.clearSelection()
 
       assert.equal(options[0].getAttribute('aria-selected'), 'false')
       assert.equal(input.hasAttribute('aria-activedescendant'), false)

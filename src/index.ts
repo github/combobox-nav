@@ -1,97 +1,122 @@
-const comboboxStates = new WeakMap()
-
-export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
-  if (comboboxStates.get(input)) {
-    uninstall(input)
-  }
-
-  if (!list.id) {
-    list.id = `combobox-${Math.random()
-      .toString()
-      .slice(2, 6)}`
-  }
-
-  input.setAttribute('role', 'combobox')
-  input.setAttribute('aria-controls', list.id)
-  input.setAttribute('aria-expanded', 'false')
-  input.setAttribute('aria-autocomplete', 'list')
-  input.setAttribute('aria-haspopup', 'listbox')
-  comboboxStates.set(input, {list, isComposing: false})
-}
-
-export function uninstall(input: HTMLTextAreaElement | HTMLInputElement): void {
-  const {list} = comboboxStates.get(input) || {}
-  if (!list) return
-  clearSelection(input, list)
-  stop(input)
-
-  input.removeAttribute('role')
-  input.removeAttribute('aria-controls')
-  input.removeAttribute('aria-expanded')
-  input.removeAttribute('aria-autocomplete')
-  input.removeAttribute('aria-haspopup')
-  comboboxStates.delete(input)
-}
-
-export function start(input: HTMLTextAreaElement | HTMLInputElement): void {
-  const {list} = comboboxStates.get(input) || {}
-  if (!list) return
-
-  input.setAttribute('aria-expanded', 'true')
-  input.addEventListener('compositionstart', trackComposition)
-  input.addEventListener('compositionend', trackComposition)
-  ;(input as HTMLInputElement).addEventListener('keydown', keyboardBindings)
-  list.addEventListener('click', commitWithElement)
-}
-
-export function stop(input: HTMLTextAreaElement | HTMLInputElement): void {
-  const {list} = comboboxStates.get(input) || {}
-  if (!list) return
-
-  input.removeAttribute('aria-activedescendant')
-  input.setAttribute('aria-expanded', 'false')
-  input.removeEventListener('compositionstart', trackComposition)
-  input.removeEventListener('compositionend', trackComposition)
-  ;(input as HTMLInputElement).removeEventListener('keydown', keyboardBindings)
-  list.removeEventListener('click', commitWithElement)
-}
-
 const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
 
-function keyboardBindings(event: KeyboardEvent) {
+export default class Combobox {
+  isComposing: boolean
+  list: HTMLElement
+  input: HTMLTextAreaElement | HTMLInputElement
+  keyboardEventHandler: (event: KeyboardEvent) => void
+  compositionEventHandler: (event: Event) => void
+
+  constructor(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement) {
+    this.input = input
+    this.list = list
+    this.isComposing = false
+
+    if (!list.id) {
+      list.id = `combobox-${Math.random()
+        .toString()
+        .slice(2, 6)}`
+    }
+
+    this.keyboardEventHandler = event => keyboardBindings(event, this)
+    this.compositionEventHandler = event => trackComposition(event, this)
+    input.setAttribute('role', 'combobox')
+    input.setAttribute('aria-controls', list.id)
+    input.setAttribute('aria-expanded', 'false')
+    input.setAttribute('aria-autocomplete', 'list')
+    input.setAttribute('aria-haspopup', 'listbox')
+  }
+
+  destroy() {
+    this.clearSelection()
+    this.stop()
+
+    this.input.removeAttribute('role')
+    this.input.removeAttribute('aria-controls')
+    this.input.removeAttribute('aria-expanded')
+    this.input.removeAttribute('aria-autocomplete')
+    this.input.removeAttribute('aria-haspopup')
+  }
+
+  start(): void {
+    this.input.setAttribute('aria-expanded', 'true')
+    this.input.addEventListener('compositionstart', this.compositionEventHandler)
+    this.input.addEventListener('compositionend', this.compositionEventHandler)
+    ;(this.input as HTMLElement).addEventListener('keydown', this.keyboardEventHandler)
+    this.list.addEventListener('click', commitWithElement)
+  }
+
+  stop(): void {
+    this.input.removeAttribute('aria-activedescendant')
+    this.input.setAttribute('aria-expanded', 'false')
+    this.input.removeEventListener('compositionstart', this.compositionEventHandler)
+    this.input.removeEventListener('compositionend', this.compositionEventHandler)
+    ;(this.input as HTMLElement).removeEventListener('keydown', this.keyboardEventHandler)
+    this.list.removeEventListener('click', commitWithElement)
+  }
+
+  navigate(indexDiff: -1 | 1 = 1): void {
+    const focusEl = Array.from(this.list.querySelectorAll<HTMLElement>('[aria-selected="true"]')).filter(visible)[0]
+    const els = Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]')).filter(visible)
+    const focusIndex = els.indexOf(focusEl)
+    let indexOfItem = indexDiff === 1 ? 0 : els.length - 1
+    if (focusEl && focusIndex >= 0) {
+      const newIndex = focusIndex + indexDiff
+      if (newIndex >= 0 && newIndex < els.length) indexOfItem = newIndex
+    }
+
+    const target = els[indexOfItem]
+    if (!target) return
+    for (const el of els) {
+      if (target === el) {
+        this.input.setAttribute('aria-activedescendant', target.id)
+        target.setAttribute('aria-selected', 'true')
+        scrollTo(this.list, target)
+      } else {
+        el.setAttribute('aria-selected', 'false')
+      }
+    }
+  }
+
+  clearSelection(): void {
+    this.input.removeAttribute('aria-activedescendant')
+    for (const el of this.list.querySelectorAll('[aria-selected="true"]')) {
+      el.setAttribute('aria-selected', 'false')
+    }
+  }
+}
+
+function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
   if (event.shiftKey || event.metaKey || event.altKey) return
-  const input = event.currentTarget
-  if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
-  const {list, isComposing} = comboboxStates.get(input) || {}
-  if (!list || isComposing) return
+  if (combobox.isComposing) return
 
   switch (event.key) {
     case 'Enter':
     case 'Tab':
-      if (commit(input, list)) {
+      if (commit(combobox.input, combobox.list)) {
         event.preventDefault()
       }
       break
     case 'Escape':
-      clearSelection(input, list)
+      combobox.clearSelection()
       break
     case 'ArrowDown':
-      navigate(input, list, 1)
+      combobox.navigate(1)
       event.preventDefault()
       break
     case 'ArrowUp':
-      navigate(input, list, -1)
+      combobox.navigate(-1)
       event.preventDefault()
       break
     case 'n':
       if (ctrlBindings && event.ctrlKey) {
-        navigate(input, list, 1)
+        combobox.navigate(1)
         event.preventDefault()
       }
       break
     case 'p':
       if (ctrlBindings && event.ctrlKey) {
-        navigate(input, list, -1)
+        combobox.navigate(-1)
         event.preventDefault()
       }
       break
@@ -126,51 +151,13 @@ function visible(el: HTMLElement): boolean {
   )
 }
 
-export function navigate(
-  input: HTMLTextAreaElement | HTMLInputElement,
-  list: HTMLElement,
-  indexDiff: -1 | 1 = 1
-): void {
-  const focusEl = Array.from(list.querySelectorAll<HTMLElement>('[aria-selected="true"]')).filter(visible)[0]
-  const els = Array.from(list.querySelectorAll<HTMLElement>('[role="option"]')).filter(visible)
-  const focusIndex = els.indexOf(focusEl)
-  let indexOfItem = indexDiff === 1 ? 0 : els.length - 1
-  if (focusEl && focusIndex >= 0) {
-    const newIndex = focusIndex + indexDiff
-    if (newIndex >= 0 && newIndex < els.length) indexOfItem = newIndex
-  }
+function trackComposition(event: Event, combobox: Combobox): void {
+  combobox.isComposing = event.type === 'compositionstart'
 
-  const target = els[indexOfItem]
-  if (!target) return
-  for (const el of els) {
-    if (target === el) {
-      input.setAttribute('aria-activedescendant', target.id)
-      target.setAttribute('aria-selected', 'true')
-      scrollTo(list, target)
-    } else {
-      el.setAttribute('aria-selected', 'false')
-    }
-  }
-}
-
-export function clearSelection(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): void {
-  input.removeAttribute('aria-activedescendant')
-  for (const el of list.querySelectorAll('[aria-selected="true"]')) {
-    el.setAttribute('aria-selected', 'false')
-  }
-}
-
-function trackComposition(event: Event): void {
-  const input = event.currentTarget
-  if (!(input instanceof HTMLTextAreaElement || input instanceof HTMLInputElement)) return
-  const state = comboboxStates.get(input)
-  if (!state) return
-  state.isComposing = event.type === 'compositionstart'
-
-  const list = document.getElementById(input.getAttribute('aria-controls') || '')
+  const list = document.getElementById(combobox.input.getAttribute('aria-controls') || '')
   if (!list) return
 
-  clearSelection(input, list)
+  combobox.clearSelection()
 }
 
 function scrollTo(container: HTMLElement, target: HTMLElement) {

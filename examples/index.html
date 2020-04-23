@@ -22,18 +22,18 @@
   <pre class="events"></pre>
 
   <script type="module">
-    // import {install, uninstall, stop, start} from '../dist/index.js'
-    import {install, uninstall, stop, start} from 'https://unpkg.com/@github/combobox-nav@latest/dist/index.js'
+    // import Combobox from '../dist/index.js'
+    import Combobox from 'https://unpkg.com/@github/combobox-nav@latest/dist/index.js'
     const input = document.querySelector('input')
     const list = document.querySelector('ul')
-    install(input, list)
+    const comboboxController = new Combobox(input, list)
 
     function toggleList() {
       const hidden = input.value.length === 0
       if (hidden) {
-        stop(input)
+        comboboxController.stop()
       } else {
-        start(input)
+        comboboxController.start()
       }
       list.hidden = hidden
     }
@@ -41,7 +41,8 @@
     input.addEventListener('focus', toggleList)
     input.addEventListener('blur', () => {
       list.hidden = true
-      stop(input)
+      comboboxController.clearSelection()
+      comboboxController.stop()
     })
 
     const events = document.querySelector('.events')

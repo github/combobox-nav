@@ -19,6 +19,7 @@ export function install(input: HTMLTextAreaElement | HTMLInputElement, list: HTM
   input.setAttribute('aria-controls', list.id)
   input.setAttribute('aria-expanded', 'false')
   input.setAttribute('aria-autocomplete', 'list')
+  input.setAttribute('aria-haspopup', 'listbox')
   comboboxStates.set(input, {list, isComposing: false})
 }
 
@@ -32,6 +33,7 @@ export function uninstall(input: HTMLTextAreaElement | HTMLInputElement): void {
   input.removeAttribute('aria-controls')
   input.removeAttribute('aria-expanded')
   input.removeAttribute('aria-autocomplete')
+  input.removeAttribute('aria-haspopup')
   comboboxStates.delete(input)
 }
 

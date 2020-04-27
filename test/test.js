@@ -15,7 +15,7 @@ describe('combobox-nav', function() {
         <input type="text">
         <ul role="listbox" id="list-id">
           <li id="baymax" role="option">Baymax</li>
-          <li><del>BB-8</del></li>
+          <li id="bb-8"><del>BB-8</del></li>
           <li id="hubot" role="option">Hubot</li>
           <li id="r2-d2" role="option">R2-D2</li>
         </ul>
@@ -71,12 +71,12 @@ describe('combobox-nav', function() {
           <li id="r2-d2" role="option">R2-D2</li>
           <li id="johnny-5" hidden role="option">Johnny 5</li>
           <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
-          <li><a href="#wall-e" role="option">Wall-E</a></li>
+          <li><a href="#link" role="option" id="link">Link</a></li>
         </ul>
       `
       input = document.querySelector('input')
       list = document.querySelector('ul')
-      options = document.querySelectorAll('li')
+      options = document.querySelectorAll('[role=option]')
       combobox = new Combobox(input, list)
       combobox.start()
     })
@@ -99,27 +99,27 @@ describe('combobox-nav', function() {
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
 
       press(input, 'ArrowDown')
-      assert.equal(options[2].getAttribute('aria-selected'), 'true')
+      assert.equal(options[1].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
 
       press(input, 'Enter')
 
       press(input, 'ArrowDown')
-      assert.equal(options[3].getAttribute('aria-selected'), 'true')
+      assert.equal(options[2].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
 
       press(input, 'ArrowDown')
-      assert.equal(options[5].getAttribute('aria-selected'), 'true')
+      assert.equal(options[4].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'wall-e')
       press(input, 'Enter')
-      click(options[5])
-
-      press(input, 'ArrowUp')
-      assert.equal(options[3].getAttribute('aria-selected'), 'true')
-      assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
+      click(document.getElementById('wall-e'))
 
       press(input, 'ArrowUp')
       assert.equal(options[2].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
+
+      press(input, 'ArrowUp')
+      assert.equal(options[1].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
 
       press(input, 'Enter')
@@ -135,9 +135,9 @@ describe('combobox-nav', function() {
         expectedTargets.push(target.id)
       })
 
-      click(options[2])
-      click(options[1])
-      click(options[0])
+      click(document.getElementById('hubot'))
+      click(document.querySelectorAll('li')[1])
+      click(document.getElementById('baymax'))
 
       assert.equal(expectedTargets.length, 2)
       assert.equal(expectedTargets[0], 'hubot')
@@ -170,7 +170,7 @@ describe('combobox-nav', function() {
 
       click(document.querySelectorAll('[role=option]')[5])
       assert(eventFired)
-      assert.equal(window.location.hash, '#wall-e')
+      assert.equal(window.location.hash, '#link')
     })
 
     it('clears aria-activedescendant and sets aria-selected=false when cleared', function() {
@@ -197,7 +197,7 @@ describe('combobox-nav', function() {
 
       press(input, 'ArrowDown')
 
-      assert.equal(options[2].getAttribute('aria-selected'), 'true')
+      assert.equal(options[1].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
       assert.equal(list.scrollTop, 36)
     })

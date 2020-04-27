@@ -120,6 +120,8 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
         event.preventDefault()
       }
       break
+    default:
+      combobox.clearSelection()
   }
 }
 

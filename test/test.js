@@ -144,6 +144,24 @@ describe('combobox-nav', function() {
       assert.equal(expectedTargets[1], 'baymax')
     })
 
+    it('clear selection on input operation', function() {
+      press(input, 'ArrowDown')
+      assert.equal(options[0].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
+
+      press(input, 'ArrowLeft')
+      assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
+      assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')
+
+      press(input, 'ArrowDown')
+      assert.equal(options[0].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
+
+      press(input, 'Backspace')
+      assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
+      assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')
+    })
+
     it('fires event and follows the link on click', function() {
       let eventFired = false
       document.addEventListener('combobox-commit', function() {

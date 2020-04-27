@@ -19,7 +19,7 @@
       <li role="presentation"><a id="wall-e" href="#wall-e" role="option">Wall-E</a></li>
     </ul>
   </form>
-  <pre class="events"></pre>
+  <pre class="events" aria-live="polite"></pre>
 
   <script type="module">
     // import Combobox from '../dist/index.js'
@@ -52,7 +52,10 @@
 
     const events = document.querySelector('.events')
     document.addEventListener('combobox-commit', function(event) {
-      events.append(`combobox-commit event on ${event.target.textContent}\n`)
+      events.append(`${event.target.textContent} committed, combobox-commit event fired\n`)
+      list.hidden = true
+      comboboxController.clearSelection()
+      comboboxController.stop()
     })
   </script>
 </body>

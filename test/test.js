@@ -114,11 +114,17 @@ describe('combobox-nav', function() {
       press(input, 'Enter')
       click(document.getElementById('wall-e'))
 
-      press(input, 'ArrowUp')
-      assert.equal(options[2].getAttribute('aria-selected'), 'true')
-      assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
+      press(input, 'ArrowDown')
+      press(input, 'ArrowDown')
+      assert.equal(options[0].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
 
       press(input, 'ArrowUp')
+      assert.equal(options[5].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'link')
+
+      press(input, 'ArrowDown')
+      press(input, 'ArrowDown')
       assert.equal(options[1].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
 

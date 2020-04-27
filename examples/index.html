@@ -38,9 +38,9 @@
       list.hidden = hidden
     }
     input.addEventListener('keydown', event => {
-      if (event.key !== 'ArrowDown' || !list.hidden) return
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key) || !list.hidden) return
       toggleList(true)
-      comboboxController.navigate(1)
+      comboboxController.navigate(event.key === 'ArrowDown' ? 1 : -1)
     })
     input.addEventListener('input', () => toggleList())
     input.addEventListener('focus', () => toggleList())

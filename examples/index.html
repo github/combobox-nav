@@ -28,8 +28,8 @@
     const list = document.querySelector('ul')
     const comboboxController = new Combobox(input, list)
 
-    function toggleList() {
-      const hidden = input.value.length === 0
+    function toggleList(show) {
+      const hidden = show === true ? false : input.value.length === 0
       if (hidden) {
         comboboxController.stop()
       } else {
@@ -37,8 +37,13 @@
       }
       list.hidden = hidden
     }
-    input.addEventListener('input', toggleList)
-    input.addEventListener('focus', toggleList)
+    input.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowDown' || !list.hidden) return
+      toggleList(true)
+      comboboxController.navigate(1)
+    })
+    input.addEventListener('input', () => toggleList())
+    input.addEventListener('focus', () => toggleList())
     input.addEventListener('blur', () => {
       list.hidden = true
       comboboxController.clearSelection()

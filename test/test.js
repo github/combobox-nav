@@ -115,13 +115,20 @@ describe('combobox-nav', function() {
       click(document.getElementById('wall-e'))
 
       press(input, 'ArrowDown')
+      assert.equal(options[5].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'link')
+
+      press(input, 'ArrowDown')
+      assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
+      assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')
+
       press(input, 'ArrowDown')
       assert.equal(options[0].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
 
       press(input, 'ArrowUp')
-      assert.equal(options[5].getAttribute('aria-selected'), 'true')
-      assert.equal(input.getAttribute('aria-activedescendant'), 'link')
+      assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
+      assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')
 
       press(input, 'ArrowDown')
       press(input, 'ArrowDown')

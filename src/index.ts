@@ -59,6 +59,13 @@ export default class Combobox {
     const focusEl = Array.from(this.list.querySelectorAll<HTMLElement>('[aria-selected="true"]')).filter(visible)[0]
     const els = Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]')).filter(visible)
     const focusIndex = els.indexOf(focusEl)
+
+    if ((focusIndex === els.length - 1 && indexDiff === 1) || (focusIndex === 0 && indexDiff === -1)) {
+      this.clearSelection()
+      this.input.focus()
+      return
+    }
+
     let indexOfItem = indexDiff === 1 ? 0 : els.length - 1
     if (focusEl && focusIndex >= 0) {
       const newIndex = focusIndex + indexDiff

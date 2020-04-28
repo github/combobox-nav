@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>combobox-nav demo</title>
+  <!-- <script type="text/javascript" src="../dist/combobox-nav.umd.js"></script> -->
+  <script type="text/javascript" src="https://unpkg.com/@github/combobox-nav@1.0.2/dist/combobox-nav.umd.js"></script>
+  <style>[aria-selected="true"] { font-weight: bold; }</style>
+</head>
+<body>
+  <form>
+    <label>
+      Least favorite robot
+      <input aria-owns="list-id" role="combobox" type="text">
+    </label>
+    <ul role="listbox" id="list-id">
+      <li id="baymax" role="option">Baymax</li>
+      <li id="bb-8" role="option" aria-disabled="true"><del>BB-8</del></li>
+      <li id="hubot" role="option">Hubot</li>
+      <li id="r2-d2" role="option">R2-D2</li>
+      <li><a id="wall-e" href="#wall-e" role="option">Wall-E</a></li>
+    </ul>
+  </form>
+  <pre class="events"></pre>
+  <script type="text/javascript">
+    comboboxNav.install(document.querySelector('input'), document.querySelector('ul'))
+
+    const events = document.querySelector('.events')
+    document.addEventListener('combobox-commit', function(event) {
+      events.append(`combobox-commit event on ${event.target.textContent}\n`)
+    })
+  </script>
+</body>
+</html>

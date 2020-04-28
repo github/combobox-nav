@@ -47,7 +47,7 @@ export default class Combobox {
   }
 
   stop(): void {
-    this.input.removeAttribute('aria-activedescendant')
+    this.clearSelection()
     this.input.setAttribute('aria-expanded', 'false')
     this.input.removeEventListener('compositionstart', this.compositionEventHandler)
     this.input.removeEventListener('compositionend', this.compositionEventHandler)

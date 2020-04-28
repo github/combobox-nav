@@ -46,7 +46,8 @@ describe('combobox-nav', function() {
 
       combobox.stop()
       press(input, 'ArrowDown')
-      assert.equal(list.children[2].getAttribute('aria-selected'), 'true')
+      assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')
+      assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
 
       combobox.destroy()
       assert.equal(list.children[2].getAttribute('aria-selected'), 'false')

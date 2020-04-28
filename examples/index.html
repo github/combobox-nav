@@ -3,8 +3,6 @@
 <head>
   <meta charset="utf-8">
   <title>combobox-nav demo</title>
-  <!-- <script type="text/javascript" src="../dist/combobox-nav.umd.js"></script> -->
-  <script type="text/javascript" src="https://unpkg.com/@github/combobox-nav@latest/dist/combobox-nav.umd.js"></script>
   <style>[aria-selected="true"] { font-weight: bold; }</style>
 </head>
 <body>
@@ -21,31 +19,43 @@
       <li role="presentation"><a id="wall-e" href="#wall-e" role="option">Wall-E</a></li>
     </ul>
   </form>
-  <pre class="events"></pre>
-  <script type="text/javascript">
+  <pre class="events" aria-live="polite"></pre>
+
+  <script type="module">
+    // import Combobox from '../dist/index.js'
+    import Combobox from 'https://unpkg.com/@github/combobox-nav@latest/dist/index.js'
     const input = document.querySelector('input')
     const list = document.querySelector('ul')
-    comboboxNav.install(input, list)
+    const comboboxController = new Combobox(input, list)
 
-    function toggleList() {
-      const hidden = input.value.length === 0
+    function toggleList(show) {
+      const hidden = show === true ? false : input.value.length === 0
       if (hidden) {
-        comboboxNav.stop(input)
+        comboboxController.stop()
       } else {
-        comboboxNav.start(input)
+        comboboxController.start()
       }
       list.hidden = hidden
     }
-    input.addEventListener('input', toggleList)
-    input.addEventListener('focus', toggleList)
+    input.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key) || !list.hidden) return
+      toggleList(true)
+      comboboxController.navigate(event.key === 'ArrowDown' ? 1 : -1)
+    })
+    input.addEventListener('input', () => toggleList())
+    input.addEventListener('focus', () => toggleList())
     input.addEventListener('blur', () => {
       list.hidden = true
-      comboboxNav.stop(input)
+      comboboxController.clearSelection()
+      comboboxController.stop()
     })
 
     const events = document.querySelector('.events')
     document.addEventListener('combobox-commit', function(event) {
-      events.append(`combobox-commit event on ${event.target.textContent}\n`)
+      events.append(`${event.target.textContent} committed, combobox-commit event fired\n`)
+      list.hidden = true
+      comboboxController.clearSelection()
+      comboboxController.stop()
     })
   </script>
 </body>

@@ -28,23 +28,23 @@ $ npm install @github/combobox-nav
 ### JS
 
 ```js
-import {clearSelection, install, navigate, start, stop, uninstall} from '@github/combobox-nav'
+import Combobox from '@github/combobox-nav'
 const input = document.querySelector('#robot-input')
 const list = document.querySelector('#list-id')
 
 // install combobox pattern on a given input and listbox
-install(input, list)
+const combobox = new Combobox(input, list)
 // when options appear, start intercepting keyboard events for navigation
-start(input)
+combobox.start()
 // when options disappear, stop intercepting keyboard events for navigation
-stop(input)
+combobox.stop()
 
 // move selection to the nth+1 item in the list
-navigate(input, list, 1)
+combobox.navigate(1)
 // reset selection
-clearSelection(input, list)
+combobox.clearSelection()
 // uninstall combobox pattern from the input
-uninstall(input)
+combobox.destroy()
 ```
 
 ## Events

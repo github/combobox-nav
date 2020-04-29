@@ -4,9 +4,11 @@
   "version": "2.0.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
+  "type": "module",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "repository": "github/combobox-nav",
+  "prettier": "@github/prettier-config",
   "files": [
     "dist"
   ],
@@ -15,12 +17,13 @@
     "lint": "github-lint",
     "prebuild": "npm run clean && npm run lint && mkdir dist",
     "build": "tsc",
-    "test": "karma start karma.config.js",
+    "test": "karma start karma.config.cjs",
     "pretest": "npm run build",
     "prepublishOnly": "npm run build",
     "postpublish": "npm publish --ignore-scripts --@github:registry='https://npm.pkg.github.com'"
   },
   "devDependencies": {
+    "@github/prettier-config": "0.0.4",
     "chai": "^4.2.0",
     "eslint": "^6.6.0",
     "eslint-plugin-github": "^3.4.1",

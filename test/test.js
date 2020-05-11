@@ -171,6 +171,10 @@ describe('combobox-nav', function() {
       assert.equal(options[0].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
 
+      press(input, 'Control', true)
+      assert.equal(options[0].getAttribute('aria-selected'), 'true', 'Selection stays on modifier keydown')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax', 'Selection stays on modifier keydown')
+
       press(input, 'Backspace')
       assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
       assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')

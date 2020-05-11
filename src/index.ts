@@ -99,6 +99,7 @@ export default class Combobox {
 
 function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
   if (event.shiftKey || event.metaKey || event.altKey) return
+  if (!ctrlBindings && event.ctrlKey) return
   if (combobox.isComposing) return
 
   switch (event.key) {
@@ -132,7 +133,7 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
       }
       break
     default:
-      if (ctrlBindings && event.ctrlKey) break
+      if (event.ctrlKey) break
       combobox.clearSelection()
   }
 }

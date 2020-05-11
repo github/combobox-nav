@@ -6,6 +6,7 @@ export default class Combobox {
   input: HTMLTextAreaElement | HTMLInputElement
   keyboardEventHandler: (event: KeyboardEvent) => void
   compositionEventHandler: (event: Event) => void
+  inputHandler: (event: Event) => void
 
   constructor(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement) {
     this.input = input
@@ -20,6 +21,7 @@ export default class Combobox {
 
     this.keyboardEventHandler = event => keyboardBindings(event, this)
     this.compositionEventHandler = event => trackComposition(event, this)
+    this.inputHandler = this.clearSelection.bind(this)
     input.setAttribute('role', 'combobox')
     input.setAttribute('aria-controls', list.id)
     input.setAttribute('aria-expanded', 'false')
@@ -42,6 +44,7 @@ export default class Combobox {
     this.input.setAttribute('aria-expanded', 'true')
     this.input.addEventListener('compositionstart', this.compositionEventHandler)
     this.input.addEventListener('compositionend', this.compositionEventHandler)
+    this.input.addEventListener('input', this.inputHandler)
     ;(this.input as HTMLElement).addEventListener('keydown', this.keyboardEventHandler)
     this.list.addEventListener('click', commitWithElement)
   }
@@ -51,6 +54,7 @@ export default class Combobox {
     this.input.setAttribute('aria-expanded', 'false')
     this.input.removeEventListener('compositionstart', this.compositionEventHandler)
     this.input.removeEventListener('compositionend', this.compositionEventHandler)
+    this.input.removeEventListener('input', this.inputHandler)
     ;(this.input as HTMLElement).removeEventListener('keydown', this.keyboardEventHandler)
     this.list.removeEventListener('click', commitWithElement)
   }
@@ -128,6 +132,7 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
       }
       break
     default:
+      if (ctrlBindings && event.ctrlKey) break
       combobox.clearSelection()
   }
 }

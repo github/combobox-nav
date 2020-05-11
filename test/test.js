@@ -1,4 +1,7 @@
 import Combobox from '../dist/index.js'
+
+const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
+
 function press(input, key, ctrlKey) {
   input.dispatchEvent(new KeyboardEvent('keydown', {key, ctrlKey}))
 }
@@ -105,17 +108,17 @@ describe('combobox-nav', function() {
 
       press(input, 'Enter')
 
-      press(input, 'ArrowDown')
+      ctrlBindings ? press(input, 'n', true) : press(input, 'ArrowDown')
       assert.equal(options[2].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'r2-d2')
 
-      press(input, 'ArrowDown')
+      ctrlBindings ? press(input, 'n', true) : press(input, 'ArrowDown')
       assert.equal(options[4].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'wall-e')
       press(input, 'Enter')
       click(document.getElementById('wall-e'))
 
-      press(input, 'ArrowDown')
+      ctrlBindings ? press(input, 'n', true) : press(input, 'ArrowDown')
       assert.equal(options[5].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'link')
 
@@ -127,19 +130,18 @@ describe('combobox-nav', function() {
       assert.equal(options[0].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
 
-      press(input, 'ArrowUp')
+      ctrlBindings ? press(input, 'p', true) : press(input, 'ArrowUp')
       assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
       assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')
 
-      press(input, 'ArrowDown')
-      press(input, 'ArrowDown')
-      assert.equal(options[1].getAttribute('aria-selected'), 'true')
-      assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
+      press(input, 'ArrowUp')
+      assert.equal(options[5].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'link')
 
       press(input, 'Enter')
       assert.equal(expectedTargets.length, 2)
       assert.equal(expectedTargets[0], 'hubot')
-      assert.equal(expectedTargets[1], 'hubot')
+      assert.equal(expectedTargets[1], 'link')
     })
 
     it('fires commit events on click', function() {
@@ -171,9 +173,11 @@ describe('combobox-nav', function() {
       assert.equal(options[0].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
 
-      press(input, 'Control', true)
-      assert.equal(options[0].getAttribute('aria-selected'), 'true', 'Selection stays on modifier keydown')
-      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax', 'Selection stays on modifier keydown')
+      if (ctrlBindings) {
+        press(input, 'Control', true)
+        assert.equal(options[0].getAttribute('aria-selected'), 'true', 'Selection stays on modifier keydown')
+        assert.equal(input.getAttribute('aria-activedescendant'), 'baymax', 'Selection stays on modifier keydown')
+      }
 
       press(input, 'Backspace')
       assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')

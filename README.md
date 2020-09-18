@@ -25,6 +25,11 @@ $ npm install @github/combobox-nav
 </ul>
 ```
 
+Markup requirements:
+
+- Each option needs to have `role="option"` and a unique `id`
+- The list should have `role="listbox"`
+
 ### JS
 
 ```js

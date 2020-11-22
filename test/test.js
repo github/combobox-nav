@@ -138,6 +138,14 @@ describe('combobox-nav', function() {
       assert.equal(options[5].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'link')
 
+      press(input, 'Home')
+      assert.equal(options[0].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
+
+      press(input, 'End')
+      assert.equal(options[5].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'link')
+
       press(input, 'Enter')
       assert.equal(expectedTargets.length, 2)
       assert.equal(expectedTargets[0], 'hubot')

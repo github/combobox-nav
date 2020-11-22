@@ -120,6 +120,16 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
       combobox.navigate(-1)
       event.preventDefault()
       break
+    case 'Home':
+      combobox.clearSelection()
+      combobox.navigate(1)
+      event.preventDefault()
+      break
+    case 'End':
+      combobox.clearSelection()
+      combobox.navigate(-1)
+      event.preventDefault()
+      break
     case 'n':
       if (ctrlBindings && event.ctrlKey) {
         combobox.navigate(1)

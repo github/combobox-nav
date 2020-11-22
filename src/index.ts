@@ -1,7 +1,10 @@
+type OptionalNavigationKeys = 'Home' | 'End'
+
 export type ComboboxSettings = {
   tabInsertsSuggestions?: boolean
   defaultFirstOption?: boolean
   scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
+  optionalNavigationKeys?: OptionalNavigationKeys[]
 }
 
 export default class Combobox {
@@ -15,17 +18,19 @@ export default class Combobox {
   tabInsertsSuggestions: boolean
   defaultFirstOption: boolean
   scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
+  optionalNavigationKeys: OptionalNavigationKeys[]
 
   constructor(
     input: HTMLTextAreaElement | HTMLInputElement,
     list: HTMLElement,
-    {tabInsertsSuggestions, defaultFirstOption, scrollIntoViewOptions}: ComboboxSettings = {},
+    {tabInsertsSuggestions, defaultFirstOption, scrollIntoViewOptions, optionalNavigationKeys}: ComboboxSettings = {},
   ) {
     this.input = input
     this.list = list
     this.tabInsertsSuggestions = tabInsertsSuggestions ?? true
     this.defaultFirstOption = defaultFirstOption ?? false
     this.scrollIntoViewOptions = scrollIntoViewOptions
+    this.optionalNavigationKeys = optionalNavigationKeys ?? []
 
     this.isComposing = false
 
@@ -153,6 +158,20 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
     case 'ArrowUp':
       combobox.navigate(-1)
       event.preventDefault()
+      break
+    case 'Home':
+      if (combobox.optionalNavigationKeys.includes('Home')) {
+        combobox.clearSelection()
+        combobox.navigate(1)
+        event.preventDefault()
+      }
+      break
+    case 'End':
+      if (combobox.optionalNavigationKeys.includes('End')) {
+        combobox.clearSelection()
+        combobox.navigate(-1)
+        event.preventDefault()
+      }
       break
     case 'n':
       if (combobox.ctrlBindings && event.ctrlKey) {

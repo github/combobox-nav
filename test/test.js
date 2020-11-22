@@ -311,4 +311,74 @@ describe('combobox-nav', function () {
       })
     })
   })
+
+  describe('with Home key navigation enabled', () => {
+    let input
+    let list
+    let options
+    let combobox
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <input type="text">
+        <ul role="listbox" id="list-id">
+          <li id="baymax" role="option">Baymax</li>
+          <li><del>BB-8</del></li>
+          <li id="hubot" role="option">Hubot</li>
+          <li id="r2-d2" role="option">R2-D2</li>
+          <li id="johnny-5" hidden role="option">Johnny 5</li>
+          <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
+          <li><a href="#link" role="option" id="link">Link</a></li>
+        </ul>
+      `
+      input = document.querySelector('input')
+      list = document.querySelector('ul')
+      options = document.querySelectorAll('[role=option]')
+      combobox = new Combobox(input, list, {optionalNavigationKeys: ['Home']})
+      combobox.start()
+    })
+
+    it('updates attributes on keyboard events', () => {
+      press(input, 'ArrowDown')
+      press(input, 'ArrowDown')
+
+      assert.equal(options[1].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
+
+      press(input, 'Home')
+      assert.equal(options[0].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
+    })
+  })
+
+  describe('with End key navigation enabled', () => {
+    let input
+    let list
+    let options
+    let combobox
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <input type="text">
+        <ul role="listbox" id="list-id">
+          <li id="baymax" role="option">Baymax</li>
+          <li><del>BB-8</del></li>
+          <li id="hubot" role="option">Hubot</li>
+          <li id="r2-d2" role="option">R2-D2</li>
+          <li id="johnny-5" hidden role="option">Johnny 5</li>
+          <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
+          <li><a href="#link" role="option" id="link">Link</a></li>
+        </ul>
+      `
+      input = document.querySelector('input')
+      list = document.querySelector('ul')
+      options = document.querySelectorAll('[role=option]')
+      combobox = new Combobox(input, list, {optionalNavigationKeys: ['End']})
+      combobox.start()
+    })
+
+    it('updates attributes on keyboard events', () => {
+      press(input, 'End')
+      assert.equal(options[5].getAttribute('aria-selected'), 'true')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'link')
+    })
+  })
 })

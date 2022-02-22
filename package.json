@@ -28,7 +28,7 @@
     "chromium": "^3.0.3",
     "eslint": "^6.6.0",
     "eslint-plugin-github": "^3.4.1",
-    "karma": "^5.0.2",
+    "karma": "^6.3.14",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-mocha": "^2.0.0",

@@ -219,7 +219,7 @@ describe('combobox-nav', function() {
 
       assert.equal(options[1].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
-      assert.equal(list.scrollTop, 36)
+      assert.equal(list.scrollTop, options[1].offsetTop)
     })
   })
 })

@@ -10,10 +10,11 @@ function click(element) {
   element.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
 }
 
-describe('combobox-nav', function() {
-  describe('with API', function() {
-    let input, list
-    beforeEach(function() {
+describe('combobox-nav', function () {
+  describe('with API', function () {
+    let input
+    let list
+    beforeEach(function () {
       document.body.innerHTML = `
         <input type="text">
         <ul role="listbox" id="list-id">
@@ -27,11 +28,11 @@ describe('combobox-nav', function() {
       list = document.querySelector('ul')
     })
 
-    afterEach(function() {
+    afterEach(function () {
       document.body.innerHTML = ''
     })
 
-    it('installs, starts, navigates, stops, and uninstalls', function() {
+    it('installs, starts, navigates, stops, and uninstalls', function () {
       const combobox = new Combobox(input, list)
       assert.equal(input.getAttribute('role'), 'combobox')
       assert.equal(input.getAttribute('aria-expanded'), 'false')
@@ -63,9 +64,12 @@ describe('combobox-nav', function() {
     })
   })
 
-  describe('with default setup', function() {
-    let input, list, options, combobox
-    beforeEach(function() {
+  describe('with default setup', function () {
+    let input
+    let list
+    let options
+    let combobox
+    beforeEach(function () {
       document.body.innerHTML = `
         <input type="text">
         <ul role="listbox" id="list-id">
@@ -85,16 +89,16 @@ describe('combobox-nav', function() {
       combobox.start()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       combobox.destroy()
       combobox = null
       document.body.innerHTML = ''
     })
 
-    it('updates attributes on keyboard events', function() {
+    it('updates attributes on keyboard events', function () {
       const expectedTargets = []
 
-      document.addEventListener('combobox-commit', function({target}) {
+      document.addEventListener('combobox-commit', function ({target}) {
         expectedTargets.push(target.id)
       })
 
@@ -144,10 +148,10 @@ describe('combobox-nav', function() {
       assert.equal(expectedTargets[1], 'link')
     })
 
-    it('fires commit events on click', function() {
+    it('fires commit events on click', function () {
       const expectedTargets = []
 
-      document.addEventListener('combobox-commit', function({target}) {
+      document.addEventListener('combobox-commit', function ({target}) {
         expectedTargets.push(target.id)
       })
 
@@ -160,7 +164,7 @@ describe('combobox-nav', function() {
       assert.equal(expectedTargets[1], 'baymax')
     })
 
-    it('clear selection on input operation', function() {
+    it('clear selection on input operation', function () {
       press(input, 'ArrowDown')
       assert.equal(options[0].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
@@ -182,9 +186,9 @@ describe('combobox-nav', function() {
       assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')
     })
 
-    it('fires event and follows the link on click', function() {
+    it('fires event and follows the link on click', function () {
       let eventFired = false
-      document.addEventListener('combobox-commit', function() {
+      document.addEventListener('combobox-commit', function () {
         eventFired = true
       })
 
@@ -193,7 +197,7 @@ describe('combobox-nav', function() {
       assert.equal(window.location.hash, '#link')
     })
 
-    it('clears aria-activedescendant and sets aria-selected=false when cleared', function() {
+    it('clears aria-activedescendant and sets aria-selected=false when cleared', function () {
       press(input, 'ArrowDown')
       assert.equal(options[0].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'baymax')
@@ -204,7 +208,7 @@ describe('combobox-nav', function() {
       assert.equal(input.hasAttribute('aria-activedescendant'), false)
     })
 
-    it('scrolls when the selected item is not in view', function() {
+    it('scrolls when the selected item is not in view', function () {
       list.style.overflow = 'auto'
       list.style.height = '18px'
       list.style.position = 'relative'

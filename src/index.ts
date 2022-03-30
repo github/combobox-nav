@@ -14,9 +14,7 @@ export default class Combobox {
     this.isComposing = false
 
     if (!list.id) {
-      list.id = `combobox-${Math.random()
-        .toString()
-        .slice(2, 6)}`
+      list.id = `combobox-${Math.random().toString().slice(2, 6)}`
     }
 
     this.keyboardEventHandler = event => keyboardBindings(event, this)

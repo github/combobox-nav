@@ -3,12 +3,12 @@ const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
 export default class Combobox {
   isComposing: boolean
   list: HTMLElement
-  input: HTMLTextAreaElement | HTMLInputElement
+  input: HTMLElement
   keyboardEventHandler: (event: KeyboardEvent) => void
   compositionEventHandler: (event: Event) => void
   inputHandler: (event: Event) => void
 
-  constructor(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement) {
+  constructor(input: HTMLElement, list: HTMLElement) {
     this.input = input
     this.list = list
     this.isComposing = false
@@ -144,7 +144,7 @@ function commitWithElement(event: MouseEvent) {
   fireCommitEvent(target)
 }
 
-function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): boolean {
+function commit(input: HTMLElement, list: HTMLElement): boolean {
   const target = list.querySelector<HTMLElement>('[aria-selected="true"]')
   if (!target) return false
   if (target.getAttribute('aria-disabled') === 'true') return true

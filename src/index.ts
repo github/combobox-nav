@@ -1,5 +1,3 @@
-const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
-
 export default class Combobox {
   isComposing: boolean
   list: HTMLElement
@@ -17,7 +15,9 @@ export default class Combobox {
       list.id = `combobox-${Math.random().toString().slice(2, 6)}`
     }
 
-    this.keyboardEventHandler = event => keyboardBindings(event, this)
+    const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
+
+    this.keyboardEventHandler = event => keyboardBindings(event, this, ctrlBindings)
     this.compositionEventHandler = event => trackComposition(event, this)
     this.inputHandler = this.clearSelection.bind(this)
     input.setAttribute('role', 'combobox')
@@ -95,7 +95,7 @@ export default class Combobox {
   }
 }
 
-function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
+function keyboardBindings(event: KeyboardEvent, combobox: Combobox, ctrlBindings: boolean) {
   if (event.shiftKey || event.metaKey || event.altKey) return
   if (!ctrlBindings && event.ctrlKey) return
   if (combobox.isComposing) return

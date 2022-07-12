@@ -5,6 +5,7 @@ export default class Combobox {
   keyboardEventHandler: (event: KeyboardEvent) => void
   compositionEventHandler: (event: Event) => void
   inputHandler: (event: Event) => void
+  ctrlBindings: boolean
 
   constructor(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement) {
     this.input = input
@@ -15,9 +16,9 @@ export default class Combobox {
       list.id = `combobox-${Math.random().toString().slice(2, 6)}`
     }
 
-    const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
+    this.ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
 
-    this.keyboardEventHandler = event => keyboardBindings(event, this, ctrlBindings)
+    this.keyboardEventHandler = event => keyboardBindings(event, this)
     this.compositionEventHandler = event => trackComposition(event, this)
     this.inputHandler = this.clearSelection.bind(this)
     input.setAttribute('role', 'combobox')
@@ -95,9 +96,9 @@ export default class Combobox {
   }
 }
 
-function keyboardBindings(event: KeyboardEvent, combobox: Combobox, ctrlBindings: boolean) {
+function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
   if (event.shiftKey || event.metaKey || event.altKey) return
-  if (!ctrlBindings && event.ctrlKey) return
+  if (!combobox.ctrlBindings && event.ctrlKey) return
   if (combobox.isComposing) return
 
   switch (event.key) {
@@ -119,13 +120,13 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox, ctrlBindings
       event.preventDefault()
       break
     case 'n':
-      if (ctrlBindings && event.ctrlKey) {
+      if (combobox.ctrlBindings && event.ctrlKey) {
         combobox.navigate(1)
         event.preventDefault()
       }
       break
     case 'p':
-      if (ctrlBindings && event.ctrlKey) {
+      if (combobox.ctrlBindings && event.ctrlKey) {
         combobox.navigate(-1)
         event.preventDefault()
       }

@@ -1,3 +1,15 @@
+export type ComboboxSettings = {
+  /**
+   * Control whether pressing the `Tab` key should insert a suggestion (`Enter` will always
+   * insert a suggestion regardless of this setting). When `true`, tab-navigation will be
+   * hijacked when open (which can have negative impacts on accessibility) but the combobox
+   * will more closely imitate a native IDE experience.
+   *
+   * Defaults to `true`.
+   */
+  tabInsertsSuggestions?: boolean
+}
+
 export default class Combobox {
   isComposing: boolean
   list: HTMLElement
@@ -6,10 +18,17 @@ export default class Combobox {
   compositionEventHandler: (event: Event) => void
   inputHandler: (event: Event) => void
   ctrlBindings: boolean
+  tabInsertsSuggestions: boolean
 
-  constructor(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement) {
+  constructor(
+    input: HTMLTextAreaElement | HTMLInputElement,
+    list: HTMLElement,
+    {tabInsertsSuggestions}: ComboboxSettings = {}
+  ) {
     this.input = input
     this.list = list
+    this.tabInsertsSuggestions = tabInsertsSuggestions ?? true
+
     this.isComposing = false
 
     if (!list.id) {
@@ -103,8 +122,12 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
 
   switch (event.key) {
     case 'Enter':
-    case 'Tab':
       if (commit(combobox.input, combobox.list)) {
+        event.preventDefault()
+      }
+      break
+    case 'Tab':
+      if (combobox.tabInsertsSuggestions && commit(combobox.input, combobox.list)) {
         event.preventDefault()
       }
       break

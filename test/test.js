@@ -54,7 +54,7 @@ describe('combobox-nav', function () {
       assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
 
       combobox.destroy()
-      assert.equal(list.children[2].getAttribute('aria-selected'), 'false')
+      assert.equal(list.children[2].getAttribute('aria-selected'), null)
 
       assert(!input.hasAttribute('role'))
       assert(!input.hasAttribute('aria-expanded'))
@@ -204,7 +204,7 @@ describe('combobox-nav', function () {
 
       combobox.clearSelection()
 
-      assert.equal(options[0].getAttribute('aria-selected'), 'false')
+      assert.equal(options[0].getAttribute('aria-selected'), null)
       assert.equal(input.hasAttribute('aria-activedescendant'), false)
     })
 
@@ -224,6 +224,69 @@ describe('combobox-nav', function () {
       assert.equal(options[1].getAttribute('aria-selected'), 'true')
       assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
       assert.equal(list.scrollTop, options[1].offsetTop)
+    })
+  })
+
+  describe('with defaulting to first option', function () {
+    let input
+    let list
+    let options
+    let combobox
+    beforeEach(function () {
+      document.body.innerHTML = `
+        <input type="text">
+        <ul role="listbox" id="list-id">
+          <li id="baymax" role="option">Baymax</li>
+          <li><del>BB-8</del></li>
+          <li id="hubot" role="option">Hubot</li>
+          <li id="r2-d2" role="option">R2-D2</li>
+          <li id="johnny-5" hidden role="option">Johnny 5</li>
+          <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
+          <li><a href="#link" role="option" id="link">Link</a></li>
+        </ul>
+      `
+      input = document.querySelector('input')
+      list = document.querySelector('ul')
+      options = document.querySelectorAll('[role=option]')
+      combobox = new Combobox(input, list, {defaultFirstOption: true})
+      combobox.start()
+    })
+
+    afterEach(function () {
+      combobox.destroy()
+      combobox = null
+      document.body.innerHTML = ''
+    })
+
+    it('indicates first option when started', () => {
+      assert.equal(document.querySelector('[data-combobox-option-default]'), options[0])
+      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 1)
+    })
+
+    it('indicates first option when restarted', () => {
+      combobox.stop()
+      combobox.start()
+      assert.equal(document.querySelector('[data-combobox-option-default]'), options[0])
+    })
+
+    it('applies default option on Enter', () => {
+      let commits = 0
+      document.addEventListener('combobox-commit', () => commits++)
+
+      assert.equal(commits, 0)
+      press(input, 'Enter')
+      assert.equal(commits, 1)
+    })
+
+    it('clears default indication when navigating', () => {
+      combobox.navigate(1)
+      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 0)
+    })
+
+    it('resets default indication when selection cleared', () => {
+      combobox.navigate(1)
+      combobox.clearSelection()
+      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 1)
     })
   })
 })

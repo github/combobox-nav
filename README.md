@@ -15,11 +15,12 @@ $ npm install @github/combobox-nav
 ```html
 <label>
   Robot
-  <input id="robot-input" type="text">
+  <input id="robot-input" type="text" />
 </label>
 <ul role="listbox" id="list-id" hidden>
   <li id="baymax" role="option">Baymax</li>
-  <li><del>BB-8</del></li><!-- `role=option` needs to be present for item to be selectable -->
+  <li><del>BB-8</del></li>
+  <!-- `role=option` needs to be present for item to be selectable -->
   <li id="hubot" role="option">Hubot</li>
   <li id="r2-d2" role="option">R2-D2</li>
 </ul>
@@ -59,26 +60,28 @@ A bubbling `combobox-commit` event is fired on the list element when an option i
 For example, autocomplete when an option is selected:
 
 ```js
-list.addEventListener('combobox-commit', function(event) {
+list.addEventListener('combobox-commit', function (event) {
   console.log('Element selected: ', event.target)
 })
 ```
 
-**⚠ Note:** When using `<label>` + `<input>` as options, please listen on `change` instead of `combobox-commit`.
+> **Note** When using `<label>` + `<input>` as options, please listen on `change` instead of `combobox-commit`.
 
 When a label is clicked on, `click` event is fired from both `<label>` and its associated input `label.control`. Since combobox does not know about the control, `combobox-commit` cannot be used as an indicator of the item's selection state.
 
 ## Settings
 
-For advanced configuration, the constructor takes an optional third argument. This is a settings object with the following setting:
-
-- `tabInsertsSuggestions: boolean = true` -  Control whether the highlighted suggestion is inserted when <kbd>Tab</kbd> is pressed (<kbd>Enter</kbd> will always insert a suggestion regardless of this setting). When `true`, tab-navigation will be hijacked when open (which can have negative impacts on accessibility) but the combobox will more closely imitate a native IDE experience.
-
-For example:
+For advanced configuration, the constructor takes an optional third argument. For example:
 
 ```js
 const combobox = new Combobox(input, list, {tabInsertsSuggestions: true})
 ```
+
+These settings are available:
+
+- `tabInsertsSuggestions: boolean = true` - Control whether the highlighted suggestion is inserted when <kbd>Tab</kbd> is pressed (<kbd>Enter</kbd> will always insert a suggestion regardless of this setting). When `true`, tab-navigation will be hijacked when open (which can have negative impacts on accessibility) but the combobox will more closely imitate a native IDE experience.
+- `defaultFirstOption: boolean = false` - If no options are selected and the user presses <kbd>Enter</kbd>, should the first item be inserted? If enabled, the default option can be selected and styled with `[data-combobox-option-default]` . This should be styled differently from the `aria-selected` option.
+  > **Warning** Screen readers will not announce that the first item is the default. This should be announced explicitly with the use of `aria-live` status text.
 
 ## Development
 

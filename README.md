@@ -72,10 +72,13 @@ When a label is clicked on, `click` event is fired from both `<label>` and its a
 
 For advanced configuration, the constructor takes an optional third argument. This is a settings object with the following setting:
 
-<dl>
-  <dt><code>tabInsertsSuggestions: boolean = true</code></dt>
-  <dd>Control whether the highlighted suggestion is inserted when <kbd>Tab</kbd> is pressed.</dd>
-</dl>
+- `tabInsertsSuggestions: boolean = true` -  Control whether the highlighted suggestion is inserted when <kbd>Tab</kbd> is pressed (<kbd>Enter</kbd> will always insert a suggestion regardless of this setting). When `true`, tab-navigation will be hijacked when open (which can have negative impacts on accessibility) but the combobox will more closely imitate a native IDE experience.
+
+For example:
+
+```js
+const combobox = new Combobox(input, list, {tabInsertsSuggestions: true})
+```
 
 ## Development
 

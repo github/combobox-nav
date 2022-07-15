@@ -1,12 +1,4 @@
 export type ComboboxSettings = {
-  /**
-   * Control whether pressing the `Tab` key should insert a suggestion (`Enter` will always
-   * insert a suggestion regardless of this setting). When `true`, tab-navigation will be
-   * hijacked when open (which can have negative impacts on accessibility) but the combobox
-   * will more closely imitate a native IDE experience.
-   *
-   * Defaults to `true`.
-   */
   tabInsertsSuggestions?: boolean
 }
 

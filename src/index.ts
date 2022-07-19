@@ -1,5 +1,6 @@
 export type ComboboxSettings = {
   tabInsertsSuggestions?: boolean
+  defaultFirstOption?: boolean
 }
 
 export default class Combobox {
@@ -11,15 +12,17 @@ export default class Combobox {
   inputHandler: (event: Event) => void
   ctrlBindings: boolean
   tabInsertsSuggestions: boolean
+  defaultFirstOption: boolean
 
   constructor(
     input: HTMLTextAreaElement | HTMLInputElement,
     list: HTMLElement,
-    {tabInsertsSuggestions}: ComboboxSettings = {}
+    {tabInsertsSuggestions, defaultFirstOption}: ComboboxSettings = {}
   ) {
     this.input = input
     this.list = list
     this.tabInsertsSuggestions = tabInsertsSuggestions ?? true
+    this.defaultFirstOption = defaultFirstOption ?? false
 
     this.isComposing = false
 
@@ -57,6 +60,7 @@ export default class Combobox {
     this.input.addEventListener('input', this.inputHandler)
     ;(this.input as HTMLElement).addEventListener('keydown', this.keyboardEventHandler)
     this.list.addEventListener('click', commitWithElement)
+    this.indicateDefaultOption()
   }
 
   stop(): void {
@@ -67,6 +71,14 @@ export default class Combobox {
     this.input.removeEventListener('input', this.inputHandler)
     ;(this.input as HTMLElement).removeEventListener('keydown', this.keyboardEventHandler)
     this.list.removeEventListener('click', commitWithElement)
+  }
+
+  indicateDefaultOption(): void {
+    if (this.defaultFirstOption) {
+      Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]:not([aria-disabled="true"])'))
+        .filter(visible)[0]
+        .setAttribute('data-combobox-option-default', 'true')
+    }
   }
 
   navigate(indexDiff: -1 | 1 = 1): void {
@@ -88,13 +100,16 @@ export default class Combobox {
 
     const target = els[indexOfItem]
     if (!target) return
+
     for (const el of els) {
+      el.removeAttribute('data-combobox-option-default')
+
       if (target === el) {
         this.input.setAttribute('aria-activedescendant', target.id)
         target.setAttribute('aria-selected', 'true')
         scrollTo(this.list, target)
       } else {
-        el.setAttribute('aria-selected', 'false')
+        el.removeAttribute('aria-selected')
       }
     }
   }
@@ -102,8 +117,9 @@ export default class Combobox {
   clearSelection(): void {
     this.input.removeAttribute('aria-activedescendant')
     for (const el of this.list.querySelectorAll('[aria-selected="true"]')) {
-      el.setAttribute('aria-selected', 'false')
+      el.removeAttribute('aria-selected')
     }
+    this.indicateDefaultOption()
   }
 }
 
@@ -161,7 +177,7 @@ function commitWithElement(event: MouseEvent) {
 }
 
 function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): boolean {
-  const target = list.querySelector<HTMLElement>('[aria-selected="true"]')
+  const target = list.querySelector<HTMLElement>('[aria-selected="true"], [data-combobox-option-default="true"]')
   if (!target) return false
   if (target.getAttribute('aria-disabled') === 'true') return true
   target.click()

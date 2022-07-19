@@ -68,6 +68,18 @@ list.addEventListener('combobox-commit', function(event) {
 
 When a label is clicked on, `click` event is fired from both `<label>` and its associated input `label.control`. Since combobox does not know about the control, `combobox-commit` cannot be used as an indicator of the item's selection state.
 
+## Settings
+
+For advanced configuration, the constructor takes an optional third argument. This is a settings object with the following setting:
+
+- `tabInsertsSuggestions: boolean = true` -  Control whether the highlighted suggestion is inserted when <kbd>Tab</kbd> is pressed (<kbd>Enter</kbd> will always insert a suggestion regardless of this setting). When `true`, tab-navigation will be hijacked when open (which can have negative impacts on accessibility) but the combobox will more closely imitate a native IDE experience.
+
+For example:
+
+```js
+const combobox = new Combobox(input, list, {tabInsertsSuggestions: true})
+```
+
 ## Development
 
 ```

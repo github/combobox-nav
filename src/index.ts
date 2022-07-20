@@ -77,7 +77,7 @@ export default class Combobox {
     if (this.defaultFirstOption) {
       Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]:not([aria-disabled="true"])'))
         .filter(visible)[0]
-        .setAttribute('data-combobox-option-default', 'true')
+        ?.setAttribute('data-combobox-option-default', 'true')
     }
   }
 

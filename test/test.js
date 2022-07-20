@@ -288,5 +288,12 @@ describe('combobox-nav', function () {
       combobox.clearSelection()
       assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 1)
     })
+
+    it('does not error when no options are visible', () => {
+      assert.doesNotThrow(() => {
+        document.getElementById('list-id').style.display = 'none'
+        combobox.clearSelection()
+      })
+    })
   })
 })

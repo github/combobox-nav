@@ -1,3 +1,10 @@
+type TextboxElement = HTMLElement & {
+  isContentEditable: true
+  getAttribute(name: 'role'): 'textbox'
+}
+
+type SupportedInputElement = HTMLInputElement | HTMLTextAreaElement | TextboxElement
+
 export type ComboboxSettings = {
   tabInsertsSuggestions?: boolean
   defaultFirstOption?: boolean
@@ -6,7 +13,7 @@ export type ComboboxSettings = {
 export default class Combobox {
   isComposing: boolean
   list: HTMLElement
-  input: HTMLTextAreaElement | HTMLInputElement
+  input: SupportedInputElement
   keyboardEventHandler: (event: KeyboardEvent) => void
   compositionEventHandler: (event: Event) => void
   inputHandler: (event: Event) => void
@@ -15,10 +22,12 @@ export default class Combobox {
   defaultFirstOption: boolean
 
   constructor(
-    input: HTMLTextAreaElement | HTMLInputElement,
+    input: SupportedInputElement,
     list: HTMLElement,
     {tabInsertsSuggestions, defaultFirstOption}: ComboboxSettings = {}
   ) {
+    assertSupportedInputElement(input)
+
     this.input = input
     this.list = list
     this.tabInsertsSuggestions = tabInsertsSuggestions ?? true
@@ -176,7 +185,7 @@ function commitWithElement(event: MouseEvent) {
   fireCommitEvent(target)
 }
 
-function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement): boolean {
+function commit(input: SupportedInputElement, list: HTMLElement): boolean {
   const target = list.querySelector<HTMLElement>('[aria-selected="true"], [data-combobox-option-default="true"]')
   if (!target) return false
   if (target.getAttribute('aria-disabled') === 'true') return true
@@ -217,4 +226,14 @@ function inViewport(container: HTMLElement, element: HTMLElement): boolean {
   const top = element.offsetTop
   const bottom = top + element.clientHeight
   return top >= scrollTop && bottom <= containerBottom
+}
+
+function assertSupportedInputElement(element: HTMLElement): asserts element is SupportedInputElement {
+  if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+    return
+  } else if (element.isContentEditable && /textbox/i.test(element.getAttribute('role') || '')) {
+    return
+  } else {
+    throw new Error(`unsupported input argument: ${element.outerHTML}`)
+  }
 }

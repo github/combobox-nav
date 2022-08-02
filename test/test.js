@@ -1,6 +1,11 @@
 import Combobox from '../dist/index.js'
 
 const ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
+const supportedInputElements = [
+  ['<input type="text">', 'input'],
+  ['<textarea></textarea>', 'textarea'],
+  ['<div role="textbox" contenteditable></div>', '[role="textbox"][contenteditable]']
+]
 
 function press(input, key, ctrlKey) {
   input.dispatchEvent(new KeyboardEvent('keydown', {key, ctrlKey}))
@@ -10,21 +15,70 @@ function click(element) {
   element.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
 }
 
-describe('combobox-nav', function () {
-  describe('with API', function () {
-    let input
-    let list
-    beforeEach(function () {
+describe('combobox-nav', function() {
+  for (const [html, selector] of supportedInputElements) {
+    describe(`${selector}: with API`, function() {
+      let input
+      let list
+      beforeEach(function() {
+        document.body.innerHTML = `
+          ${html}
+          <ul role="listbox" id="list-id">
+            <li id="baymax" role="option">Baymax</li>
+            <li id="bb-8"><del>BB-8</del></li>
+            <li id="hubot" role="option">Hubot</li>
+            <li id="r2-d2" role="option">R2-D2</li>
+          </ul>
+        `
+        input = document.querySelector(selector)
+        list = document.querySelector('ul')
+      })
+
+      afterEach(function() {
+        document.body.innerHTML = ''
+      })
+
+      it('installs, starts, navigates, stops, and uninstalls', function () {
+        const combobox = new Combobox(input, list)
+        assert.equal(input.getAttribute('role'), 'combobox')
+        assert.equal(input.getAttribute('aria-expanded'), 'false')
+        assert.equal(input.getAttribute('aria-controls'), 'list-id')
+        assert.equal(input.getAttribute('aria-autocomplete'), 'list')
+        assert.equal(input.getAttribute('aria-haspopup'), 'listbox')
+
+        combobox.start()
+        assert.equal(input.getAttribute('aria-expanded'), 'true')
+
+        press(input, 'ArrowDown')
+        assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
+        combobox.navigate(1)
+        assert.equal(list.children[2].getAttribute('aria-selected'), 'true')
+
+        combobox.stop()
+        press(input, 'ArrowDown')
+        assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')
+        assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
+
+        combobox.destroy()
+        assert.equal(list.children[2].getAttribute('aria-selected'), null)
+
+        assert(!input.hasAttribute('role'))
+        assert(!input.hasAttribute('aria-expanded'))
+        assert(!input.hasAttribute('aria-controls'))
+        assert(!input.hasAttribute('aria-autocomplete'))
+        assert(!input.hasAttribute('aria-haspopup'))
+      })
+    })
+  }
+
+  describe('with an element that is not an input, textarea, or [contenteditable]', function() {
+    let input, list
+    beforeEach(function() {
       document.body.innerHTML = `
-        <input type="text">
-        <ul role="listbox" id="list-id">
-          <li id="baymax" role="option">Baymax</li>
-          <li id="bb-8"><del>BB-8</del></li>
-          <li id="hubot" role="option">Hubot</li>
-          <li id="r2-d2" role="option">R2-D2</li>
-        </ul>
+        <div></div>
+        <ul role="listbox" id="list-id"></ul>
       `
-      input = document.querySelector('input')
+      input = document.querySelector('div')
       list = document.querySelector('ul')
     })
 
@@ -32,35 +86,17 @@ describe('combobox-nav', function () {
       document.body.innerHTML = ''
     })
 
-    it('installs, starts, navigates, stops, and uninstalls', function () {
-      const combobox = new Combobox(input, list)
-      assert.equal(input.getAttribute('role'), 'combobox')
-      assert.equal(input.getAttribute('aria-expanded'), 'false')
-      assert.equal(input.getAttribute('aria-controls'), 'list-id')
-      assert.equal(input.getAttribute('aria-autocomplete'), 'list')
-      assert.equal(input.getAttribute('aria-haspopup'), 'listbox')
+    it('throws an error during construction', function() {
+      let error
 
-      combobox.start()
-      assert.equal(input.getAttribute('aria-expanded'), 'true')
+      try {
+        new Combobox(input, list)
+      } catch (e) {
+        error = e
+      }
 
-      press(input, 'ArrowDown')
-      assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
-      combobox.navigate(1)
-      assert.equal(list.children[2].getAttribute('aria-selected'), 'true')
-
-      combobox.stop()
-      press(input, 'ArrowDown')
-      assert(!input.hasAttribute('aria-activedescendant'), 'Nothing should be selected')
-      assert(!list.querySelector('[aria-selected=true]'), 'Nothing should be selected')
-
-      combobox.destroy()
-      assert.equal(list.children[2].getAttribute('aria-selected'), null)
-
-      assert(!input.hasAttribute('role'))
-      assert(!input.hasAttribute('aria-expanded'))
-      assert(!input.hasAttribute('aria-controls'))
-      assert(!input.hasAttribute('aria-autocomplete'))
-      assert(!input.hasAttribute('aria-haspopup'))
+      assert.ok(error)
+      assert.match(error.message, /unsupported/)
     })
   })
 

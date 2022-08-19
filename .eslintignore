@@ -1,3 +1,4 @@
 dist
 prettier.config.js
 karma.config.js
+dist-cjs

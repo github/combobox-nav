@@ -185,7 +185,7 @@ function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement
 }
 
 function fireCommitEvent(target: Element, originalEvent?: MouseEvent): void {
-  target.dispatchEvent(new CustomEvent('combobox-commit', {bubbles: true, originalEvent}))
+  target.dispatchEvent(new CustomEvent('combobox-commit', {bubbles: true, detail: {originalEvent}}))
 }
 
 function visible(el: HTMLElement): boolean {

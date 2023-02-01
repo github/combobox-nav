@@ -19,8 +19,7 @@
     "build": "tsc",
     "test": "karma start karma.config.cjs",
     "pretest": "npm run build",
-    "prepublishOnly": "npm run build",
-    "postpublish": "npm publish --ignore-scripts --@github:registry='https://npm.pkg.github.com'"
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@github/prettier-config": "0.0.4",

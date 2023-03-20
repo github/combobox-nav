@@ -23,24 +23,8 @@ jobs:
       - run: npm version ${TAG_NAME} --git-tag-version=false
         env:
           TAG_NAME: ${{ github.event.release.tag_name }}
-
-      # Provenance beta builds
-      # Remove when stable
-      - name: Clone npm
-        uses: actions/checkout@v3
-        with:
-          repository: npm/cli
-          ref: provenance
-          path: npm
-      - name: Link npm
-        run: |
-          cd npm
-          node . link
-          cd ..
-          npm version
-      # Provenance beta builds
-      # Remove when stable
-
+      # Install latest version of npm for publishing with provenance
+      - run: npm install -g npm
       - run: npm whoami; npm --ignore-scripts publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

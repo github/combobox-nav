@@ -82,6 +82,12 @@ These settings are available:
 - `tabInsertsSuggestions: boolean = true` - Control whether the highlighted suggestion is inserted when <kbd>Tab</kbd> is pressed (<kbd>Enter</kbd> will always insert a suggestion regardless of this setting). When `true`, tab-navigation will be hijacked when open (which can have negative impacts on accessibility) but the combobox will more closely imitate a native IDE experience.
 - `defaultFirstOption: boolean = false` - If no options are selected and the user presses <kbd>Enter</kbd>, should the first item be inserted? If enabled, the default option can be selected and styled with `[data-combobox-option-default]` . This should be styled differently from the `aria-selected` option.
   > **Warning** Screen readers will not announce that the first item is the default. This should be announced explicitly with the use of `aria-live` status text.
+- `scrollIntoViewOptions?: boolean | ScrollIntoViewOptions = undefined` - When
+  controlling the element marked `[aria-selected="true"]` with keyboard navigation, the selected element will be scrolled into the viewport by a call to [Element.scrollIntoView][]. Configure this value to control the scrolling behavior (either with a `boolean` or a [ScrollIntoViewOptions][] object.
+
+[Element.scrollIntoView]: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
+[ScrollIntoViewOptions]: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView#sect1
+
 
 ## Development
 

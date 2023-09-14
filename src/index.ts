@@ -190,7 +190,7 @@ function fireCommitEvent(target: Element, detail?: Record<string, unknown>): voi
 }
 
 function fireSelectEvent(target: Element): void {
-  target.dispatchEvent(new CustomEvent('combobox-select', {bubbles: true}))
+  target.dispatchEvent(new Event('combobox-select', {bubbles: true}))
 }
 
 function visible(el: HTMLElement): boolean {

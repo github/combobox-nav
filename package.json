@@ -22,7 +22,7 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@github/prettier-config": "0.0.4",
+    "@github/prettier-config": "^0.0.6",
     "chai": "^4.2.0",
     "chromium": "^3.0.3",
     "eslint": "^8.12.0",
@@ -32,7 +32,7 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-mocha": "^2.0.0",
     "karma-mocha-reporter": "^2.2.5",
-    "mocha": "^9.2.2",
-    "typescript": "^4.6.3"
+    "mocha": "^10.2.0",
+    "typescript": "^5.2.2"
   }
 }

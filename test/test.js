@@ -164,6 +164,21 @@ describe('combobox-nav', function () {
       assert.equal(expectedTargets[1], 'baymax')
     })
 
+    it('fires select events on navigating', function () {
+      const expectedTargets = []
+
+      document.addEventListener('combobox-select', function ({target}) {
+        expectedTargets.push(target.id)
+      })
+
+      press(input, 'ArrowDown')
+      press(input, 'ArrowDown')
+
+      assert.equal(expectedTargets.length, 2)
+      assert.equal(expectedTargets[0], 'baymax')
+      assert.equal(expectedTargets[1], 'hubot')
+    })
+
     it('clear selection on input operation', function () {
       press(input, 'ArrowDown')
       assert.equal(options[0].getAttribute('aria-selected'), 'true')

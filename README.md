@@ -69,6 +69,16 @@ list.addEventListener('combobox-commit', function (event) {
 
 When a label is clicked on, `click` event is fired from both `<label>` and its associated input `label.control`. Since combobox does not know about the control, `combobox-commit` cannot be used as an indicator of the item's selection state.
 
+A bubbling `combobox-select` event is fired on the list element when an option is selected but not yet committed.
+
+For example, autocomplete when an option is selected but not yet committed:
+
+```js
+list.addEventListener('combobox-select', function (event) {
+  console.log('Element selected : ', event.target)
+})
+```
+
 ## Settings
 
 For advanced configuration, the constructor takes an optional third argument. For example:

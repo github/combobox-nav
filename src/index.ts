@@ -110,7 +110,9 @@ export default class Combobox {
       if (target === el) {
         this.input.setAttribute('aria-activedescendant', target.id)
         target.setAttribute('aria-selected', 'true')
+        fireSelectEvent(target)
         target.scrollIntoView(this.scrollIntoViewOptions)
+        scrollTo(this.list, target)
       } else {
         el.removeAttribute('aria-selected')
       }
@@ -189,6 +191,10 @@ function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement
 
 function fireCommitEvent(target: Element, detail?: Record<string, unknown>): void {
   target.dispatchEvent(new CustomEvent('combobox-commit', {bubbles: true, detail}))
+}
+
+function fireSelectEvent(target: Element): void {
+  target.dispatchEvent(new Event('combobox-select', {bubbles: true}))
 }
 
 function visible(el: HTMLElement): boolean {

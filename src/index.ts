@@ -19,7 +19,7 @@ export default class Combobox {
   constructor(
     input: HTMLTextAreaElement | HTMLInputElement,
     list: HTMLElement,
-    {tabInsertsSuggestions, defaultFirstOption, scrollIntoViewOptions}: ComboboxSettings = {}
+    {tabInsertsSuggestions, defaultFirstOption, scrollIntoViewOptions}: ComboboxSettings = {},
   ) {
     this.input = input
     this.list = list

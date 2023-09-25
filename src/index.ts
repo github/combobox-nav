@@ -112,7 +112,6 @@ export default class Combobox {
         target.setAttribute('aria-selected', 'true')
         fireSelectEvent(target)
         target.scrollIntoView(this.scrollIntoViewOptions)
-        scrollTo(this.list, target)
       } else {
         el.removeAttribute('aria-selected')
       }

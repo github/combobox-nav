@@ -1,6 +1,7 @@
 export type ComboboxSettings = {
   tabInsertsSuggestions?: boolean
   defaultFirstOption?: boolean
+  scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
 }
 
 export default class Combobox {
@@ -13,16 +14,18 @@ export default class Combobox {
   ctrlBindings: boolean
   tabInsertsSuggestions: boolean
   defaultFirstOption: boolean
+  scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
 
   constructor(
     input: HTMLTextAreaElement | HTMLInputElement,
     list: HTMLElement,
-    {tabInsertsSuggestions, defaultFirstOption}: ComboboxSettings = {}
+    {tabInsertsSuggestions, defaultFirstOption, scrollIntoViewOptions}: ComboboxSettings = {}
   ) {
     this.input = input
     this.list = list
     this.tabInsertsSuggestions = tabInsertsSuggestions ?? true
     this.defaultFirstOption = defaultFirstOption ?? false
+    this.scrollIntoViewOptions = scrollIntoViewOptions
 
     this.isComposing = false
 
@@ -108,7 +111,7 @@ export default class Combobox {
         this.input.setAttribute('aria-activedescendant', target.id)
         target.setAttribute('aria-selected', 'true')
         fireSelectEvent(target)
-        scrollTo(this.list, target)
+        target.scrollIntoView(this.scrollIntoViewOptions)
       } else {
         el.removeAttribute('aria-selected')
       }
@@ -208,18 +211,4 @@ function trackComposition(event: Event, combobox: Combobox): void {
   if (!list) return
 
   combobox.clearSelection()
-}
-
-function scrollTo(container: HTMLElement, target: HTMLElement) {
-  if (!inViewport(container, target)) {
-    container.scrollTop = target.offsetTop
-  }
-}
-
-function inViewport(container: HTMLElement, element: HTMLElement): boolean {
-  const scrollTop = container.scrollTop
-  const containerBottom = scrollTop + container.clientHeight
-  const top = element.offsetTop
-  const bottom = top + element.clientHeight
-  return top >= scrollTop && bottom <= containerBottom
 }

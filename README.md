@@ -94,9 +94,11 @@ These settings are available:
   > **Warning** Screen readers will not announce that the first item is the default. This should be announced explicitly with the use of `aria-live` status text.
 - `scrollIntoViewOptions?: boolean | ScrollIntoViewOptions = undefined` - When
   controlling the element marked `[aria-selected="true"]` with keyboard navigation, the selected element will be scrolled into the viewport by a call to [Element.scrollIntoView][]. Configure this value to control the scrolling behavior (either with a `boolean` or a [ScrollIntoViewOptions][] object.
+- `optionalNavigationKeys?: Array<'Home' | 'End'>  = []` - When navigating the list, enable additional [Navigation Keys][], like <kbd>Home</kbd> to skip to the top of the list and <kbd>End</kbd> to skip to the bottom.
 
 [Element.scrollIntoView]: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
 [ScrollIntoViewOptions]: https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView#sect1
+[Navigation Keys]: https://www.w3.org/TR/uievents-key/#keys-home
 
 
 ## Development

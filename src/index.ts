@@ -25,7 +25,7 @@ export default class Combobox {
     this.list = list
     this.tabInsertsSuggestions = tabInsertsSuggestions ?? true
     this.defaultFirstOption = defaultFirstOption ?? false
-    this.scrollIntoViewOptions = scrollIntoViewOptions
+    this.scrollIntoViewOptions = scrollIntoViewOptions ?? {block: 'nearest', inline: 'nearest'}
 
     this.isComposing = false
 

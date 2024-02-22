@@ -1,5 +1,18 @@
 export type ComboboxSettings = {
   tabInsertsSuggestions?: boolean
+  /**
+   * Indicates the default behaviour for the first option when the list is shown:
+   *
+   *  - `'none'`: Don't auto-select the first option at all.
+   *  - `'active'`: Place the first option in an 'active' state where it is not
+   *    selected (is not the `aria-activedescendant`) but will still be applied
+   *    if the user presses `Enter`. To select the second item, the user would
+   *    need to press the down arrow twice. This approach allows quick application
+   *    of selections without disrupting screen reader users.
+   *  - `'selected'`: Select the first item by navigating to it. This allows quick
+   *    application of selections and makes it faster to select the second item,
+   *    but can be disruptive or confusing for screen reader users.
+   */
   firstOptionSelectionMode?: FirstOptionSelectionMode
   scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
 }

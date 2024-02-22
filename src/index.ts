@@ -67,7 +67,6 @@ export default class Combobox {
     ;(this.input as HTMLElement).addEventListener('keydown', this.keyboardEventHandler)
     this.list.addEventListener('click', commitWithElement)
     this.indicateDefaultOption()
-    this.focusDefaultOptionIfNeeded()
   }
 
   stop(): void {
@@ -85,11 +84,7 @@ export default class Combobox {
       Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]:not([aria-disabled="true"])'))
         .filter(visible)[0]
         ?.setAttribute('data-combobox-option-default', 'true')
-    }
-  }
-
-  focusDefaultOptionIfNeeded(): void {
-    if (this.firstOptionSelectionMode === 'selected') {
+    } else if (this.firstOptionSelectionMode === 'selected') {
       this.navigate(1)
     }
   }
@@ -133,7 +128,10 @@ export default class Combobox {
     for (const el of this.list.querySelectorAll('[aria-selected="true"]')) {
       el.removeAttribute('aria-selected')
     }
-    this.indicateDefaultOption()
+
+    if (this.firstOptionSelectionMode === 'active') {
+      this.indicateDefaultOption()
+    }
   }
 }
 

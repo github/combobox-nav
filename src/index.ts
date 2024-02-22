@@ -5,7 +5,7 @@ export type ComboboxSettings = {
 }
 
 // Indicates the default behaviour for the first option when the list is shown.
-export type FirstOptionSelectionMode = 'none' | 'selected' | 'focused'
+export type FirstOptionSelectionMode = 'none' | 'active' | 'selected'
 
 export default class Combobox {
   isComposing: boolean
@@ -81,7 +81,7 @@ export default class Combobox {
   }
 
   indicateDefaultOption(): void {
-    if (this.firstOptionSelectionMode === 'selected') {
+    if (this.firstOptionSelectionMode === 'active') {
       Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]:not([aria-disabled="true"])'))
         .filter(visible)[0]
         ?.setAttribute('data-combobox-option-default', 'true')
@@ -89,7 +89,7 @@ export default class Combobox {
   }
 
   focusDefaultOptionIfNeeded(): void {
-    if (this.firstOptionSelectionMode === 'focused') {
+    if (this.firstOptionSelectionMode === 'selected') {
       this.navigate(1)
     }
   }

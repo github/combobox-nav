@@ -242,7 +242,7 @@ describe('combobox-nav', function () {
     })
   })
 
-  describe('with defaulting to first option', function () {
+  describe('with defaulting to the first option being active', function () {
     let input
     let list
     let options
@@ -263,7 +263,7 @@ describe('combobox-nav', function () {
       input = document.querySelector('input')
       list = document.querySelector('ul')
       options = document.querySelectorAll('[role=option]')
-      combobox = new Combobox(input, list, {firstOptionSelectionMode: 'selected'})
+      combobox = new Combobox(input, list, {firstOptionSelectionMode: 'active'})
       combobox.start()
     })
 
@@ -313,7 +313,7 @@ describe('combobox-nav', function () {
     })
   })
 
-  describe('with defaulting to focusing the first option', function () {
+  describe('with defaulting to the first option being selected', function () {
     let input
     let list
     let combobox
@@ -332,7 +332,7 @@ describe('combobox-nav', function () {
       `
       input = document.querySelector('input')
       list = document.querySelector('ul')
-      combobox = new Combobox(input, list, {firstOptionSelectionMode: 'focused'})
+      combobox = new Combobox(input, list, {firstOptionSelectionMode: 'selected'})
       combobox.start()
     })
 

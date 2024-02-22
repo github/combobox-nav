@@ -242,7 +242,7 @@ describe('combobox-nav', function () {
     })
   })
 
-  describe('with defaulting to first option', function () {
+  describe('with defaulting to the first option being active', function () {
     let input
     let list
     let options
@@ -263,7 +263,7 @@ describe('combobox-nav', function () {
       input = document.querySelector('input')
       list = document.querySelector('ul')
       options = document.querySelectorAll('[role=option]')
-      combobox = new Combobox(input, list, {defaultFirstOption: true})
+      combobox = new Combobox(input, list, {firstOptionSelectionMode: 'active'})
       combobox.start()
     })
 
@@ -276,6 +276,7 @@ describe('combobox-nav', function () {
     it('indicates first option when started', () => {
       assert.equal(document.querySelector('[data-combobox-option-default]'), options[0])
       assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 1)
+      assert.equal(list.children[0].getAttribute('aria-selected'), null)
     })
 
     it('indicates first option when restarted', () => {
@@ -302,6 +303,65 @@ describe('combobox-nav', function () {
       combobox.navigate(1)
       combobox.clearSelection()
       assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 1)
+    })
+
+    it('does not error when no options are visible', () => {
+      assert.doesNotThrow(() => {
+        document.getElementById('list-id').style.display = 'none'
+        combobox.clearSelection()
+      })
+    })
+  })
+
+  describe('with defaulting to the first option being selected', function () {
+    let input
+    let list
+    let combobox
+    beforeEach(function () {
+      document.body.innerHTML = `
+        <input type="text">
+        <ul role="listbox" id="list-id">
+          <li id="baymax" role="option">Baymax</li>
+          <li><del>BB-8</del></li>
+          <li id="hubot" role="option">Hubot</li>
+          <li id="r2-d2" role="option">R2-D2</li>
+          <li id="johnny-5" hidden role="option">Johnny 5</li>
+          <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
+          <li><a href="#link" role="option" id="link">Link</a></li>
+        </ul>
+      `
+      input = document.querySelector('input')
+      list = document.querySelector('ul')
+      combobox = new Combobox(input, list, {firstOptionSelectionMode: 'selected'})
+      combobox.start()
+    })
+
+    afterEach(function () {
+      combobox.destroy()
+      combobox = null
+      document.body.innerHTML = ''
+    })
+
+    it('focuses first option when started', () => {
+      // Does not set the default attribute
+      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 0)
+      // Item is correctly selected
+      assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
+    })
+
+    it('indicates first option when restarted', () => {
+      combobox.stop()
+      combobox.start()
+      assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
+    })
+
+    it('applies default option on Enter', () => {
+      let commits = 0
+      document.addEventListener('combobox-commit', () => commits++)
+
+      assert.equal(commits, 0)
+      press(input, 'Enter')
+      assert.equal(commits, 1)
     })
 
     it('does not error when no options are visible', () => {

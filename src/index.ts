@@ -1,8 +1,24 @@
 export type ComboboxSettings = {
   tabInsertsSuggestions?: boolean
-  defaultFirstOption?: boolean
+  /**
+   * Indicates the default behaviour for the first option when the list is shown:
+   *
+   *  - `'none'`: Don't auto-select the first option at all.
+   *  - `'active'`: Place the first option in an 'active' state where it is not
+   *    selected (is not the `aria-activedescendant`) but will still be applied
+   *    if the user presses `Enter`. To select the second item, the user would
+   *    need to press the down arrow twice. This approach allows quick application
+   *    of selections without disrupting screen reader users.
+   *  - `'selected'`: Select the first item by navigating to it. This allows quick
+   *    application of selections and makes it faster to select the second item,
+   *    but can be disruptive or confusing for screen reader users.
+   */
+  firstOptionSelectionMode?: FirstOptionSelectionMode
   scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
 }
+
+// Indicates the default behaviour for the first option when the list is shown.
+export type FirstOptionSelectionMode = 'none' | 'active' | 'selected'
 
 export default class Combobox {
   isComposing: boolean
@@ -13,18 +29,18 @@ export default class Combobox {
   inputHandler: (event: Event) => void
   ctrlBindings: boolean
   tabInsertsSuggestions: boolean
-  defaultFirstOption: boolean
+  firstOptionSelectionMode: FirstOptionSelectionMode
   scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
 
   constructor(
     input: HTMLTextAreaElement | HTMLInputElement,
     list: HTMLElement,
-    {tabInsertsSuggestions, defaultFirstOption, scrollIntoViewOptions}: ComboboxSettings = {},
+    {tabInsertsSuggestions, firstOptionSelectionMode, scrollIntoViewOptions}: ComboboxSettings = {},
   ) {
     this.input = input
     this.list = list
     this.tabInsertsSuggestions = tabInsertsSuggestions ?? true
-    this.defaultFirstOption = defaultFirstOption ?? false
+    this.firstOptionSelectionMode = firstOptionSelectionMode ?? 'none'
     this.scrollIntoViewOptions = scrollIntoViewOptions ?? {block: 'nearest', inline: 'nearest'}
 
     this.isComposing = false
@@ -77,10 +93,12 @@ export default class Combobox {
   }
 
   indicateDefaultOption(): void {
-    if (this.defaultFirstOption) {
+    if (this.firstOptionSelectionMode === 'active') {
       Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]:not([aria-disabled="true"])'))
         .filter(visible)[0]
         ?.setAttribute('data-combobox-option-default', 'true')
+    } else if (this.firstOptionSelectionMode === 'selected') {
+      this.navigate(1)
     }
   }
 
@@ -123,7 +141,10 @@ export default class Combobox {
     for (const el of this.list.querySelectorAll('[aria-selected="true"]')) {
       el.removeAttribute('aria-selected')
     }
-    this.indicateDefaultOption()
+
+    if (this.firstOptionSelectionMode === 'active') {
+      this.indicateDefaultOption()
+    }
   }
 }
 

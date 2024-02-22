@@ -1,8 +1,11 @@
 export type ComboboxSettings = {
   tabInsertsSuggestions?: boolean
-  defaultFirstOption?: boolean
+  firstOptionSelectionMode?: FirstOptionSelectionMode
   scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
 }
+
+// Indicates the default behaviour for the first option when the list is shown.
+export type FirstOptionSelectionMode = 'none' | 'selected' | 'focused'
 
 export default class Combobox {
   isComposing: boolean
@@ -13,18 +16,18 @@ export default class Combobox {
   inputHandler: (event: Event) => void
   ctrlBindings: boolean
   tabInsertsSuggestions: boolean
-  defaultFirstOption: boolean
+  firstOptionSelectionMode: FirstOptionSelectionMode
   scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
 
   constructor(
     input: HTMLTextAreaElement | HTMLInputElement,
     list: HTMLElement,
-    {tabInsertsSuggestions, defaultFirstOption, scrollIntoViewOptions}: ComboboxSettings = {},
+    {tabInsertsSuggestions, firstOptionSelectionMode, scrollIntoViewOptions}: ComboboxSettings = {},
   ) {
     this.input = input
     this.list = list
     this.tabInsertsSuggestions = tabInsertsSuggestions ?? true
-    this.defaultFirstOption = defaultFirstOption ?? false
+    this.firstOptionSelectionMode = firstOptionSelectionMode ?? 'none'
     this.scrollIntoViewOptions = scrollIntoViewOptions ?? {block: 'nearest', inline: 'nearest'}
 
     this.isComposing = false
@@ -64,6 +67,7 @@ export default class Combobox {
     ;(this.input as HTMLElement).addEventListener('keydown', this.keyboardEventHandler)
     this.list.addEventListener('click', commitWithElement)
     this.indicateDefaultOption()
+    this.focusDefaultOptionIfNeeded()
   }
 
   stop(): void {
@@ -77,10 +81,16 @@ export default class Combobox {
   }
 
   indicateDefaultOption(): void {
-    if (this.defaultFirstOption) {
+    if (this.firstOptionSelectionMode === 'selected') {
       Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]:not([aria-disabled="true"])'))
         .filter(visible)[0]
         ?.setAttribute('data-combobox-option-default', 'true')
+    }
+  }
+
+  focusDefaultOptionIfNeeded(): void {
+    if (this.firstOptionSelectionMode === 'focused') {
+      this.navigate(1)
     }
   }
 

@@ -90,8 +90,11 @@ const combobox = new Combobox(input, list, {tabInsertsSuggestions: true})
 These settings are available:
 
 - `tabInsertsSuggestions: boolean = true` - Control whether the highlighted suggestion is inserted when <kbd>Tab</kbd> is pressed (<kbd>Enter</kbd> will always insert a suggestion regardless of this setting). When `true`, tab-navigation will be hijacked when open (which can have negative impacts on accessibility) but the combobox will more closely imitate a native IDE experience.
-- `defaultFirstOption: boolean = false` - If no options are selected and the user presses <kbd>Enter</kbd>, should the first item be inserted? If enabled, the default option can be selected and styled with `[data-combobox-option-default]` . This should be styled differently from the `aria-selected` option.
-  > **Warning** Screen readers will not announce that the first item is the default. This should be announced explicitly with the use of `aria-live` status text.
+- `firstOptionSelectionMode: FirstOptionSelectionMode = 'none'` - This option dictates the default behaviour when no options have been selected yet and the user presses <kbd>Enter</kbd>. The following options of `FirstOptionSelectionMode` will do the following:
+   - `'none'`: Don't auto-select the first option at all.
+   - `'active'`: Place the first option in an 'active' state where it is not selected (is not the `aria-activedescendant`) but will still be applied if the user presses `Enter`. To select the second item, the user would need to press the down arrow twice. This approach allows quick application of selections without disrupting screen reader users.
+   > **Warning** Screen readers will not announce that the first item is the default. This should be announced explicitly with the use of `aria-live` status 
+   - `'selected'`: Select the first item by navigating to it. This allows quick application of selections and makes it faster to select the second item, but can be disruptive or confusing for screen reader users.
 - `scrollIntoViewOptions?: boolean | ScrollIntoViewOptions = undefined` - When
   controlling the element marked `[aria-selected="true"]` with keyboard navigation, the selected element will be scrolled into the viewport by a call to [Element.scrollIntoView][]. Configure this value to control the scrolling behavior (either with a `boolean` or a [ScrollIntoViewOptions][] object.
 

@@ -97,7 +97,7 @@ export default class Combobox {
       Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]:not([aria-disabled="true"])'))
         .filter(visible)[0]
         ?.setAttribute('data-combobox-option-default', 'true')
-    } else if (this.firstOptionSelectionMode === 'selected') {
+    } else if (this.firstOptionSelectionMode === 'selected' && visible(this.list)) {
       this.navigate(1)
     }
   }
@@ -142,9 +142,7 @@ export default class Combobox {
       el.removeAttribute('aria-selected')
     }
 
-    if (this.firstOptionSelectionMode === 'active') {
-      this.indicateDefaultOption()
-    }
+    this.indicateDefaultOption()
   }
 }
 

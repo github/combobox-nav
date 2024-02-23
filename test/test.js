@@ -285,6 +285,15 @@ describe('combobox-nav', function () {
       assert.equal(document.querySelector('[data-combobox-option-default]'), options[0])
     })
 
+    it('first item remains active when typing', () => {
+      const text = 'R2-D2'
+      for (let i = 0; i < text.length; i++) {
+        press(input, text[i])
+      }
+
+      assert.equal(document.querySelector('[data-combobox-option-default]'), options[0])
+    })
+
     it('applies default option on Enter', () => {
       let commits = 0
       document.addEventListener('combobox-commit', () => commits++)
@@ -346,6 +355,15 @@ describe('combobox-nav', function () {
       // Does not set the default attribute
       assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 0)
       // Item is correctly selected
+      assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
+    })
+
+    it('first item remains selected when typing', () => {
+      const text = 'R2-D2'
+      for (let i = 0; i < text.length; i++) {
+        press(input, text[i])
+      }
+
       assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
     })
 

@@ -308,10 +308,16 @@ describe('combobox-nav', function () {
       assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 0)
     })
 
-    it('resets default indication when selection cleared', () => {
+    it('resets default indication when selection reset', () => {
+      combobox.navigate(1)
+      combobox.resetSelection()
+      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 1)
+    })
+
+    it('removes default indication when selection cleared', () => {
       combobox.navigate(1)
       combobox.clearSelection()
-      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 1)
+      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 0)
     })
 
     it('does not error when no options are visible', () => {

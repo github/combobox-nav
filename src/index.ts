@@ -80,7 +80,6 @@ export default class Combobox {
     ;(this.input as HTMLElement).addEventListener('keydown', this.keyboardEventHandler)
     this.list.addEventListener('click', commitWithElement)
     this.indicateDefaultOption()
-    this.selectFirstItemIfNeeded()
   }
 
   stop(): void {
@@ -98,11 +97,7 @@ export default class Combobox {
       Array.from(this.list.querySelectorAll<HTMLElement>('[role="option"]:not([aria-disabled="true"])'))
         .filter(visible)[0]
         ?.setAttribute('data-combobox-option-default', 'true')
-    }
-  }
-
-  selectFirstItemIfNeeded(): void {
-    if (this.firstOptionSelectionMode === 'selected') {
+    } else if (this.firstOptionSelectionMode === 'selected') {
       this.navigate(1)
     }
   }
@@ -113,7 +108,7 @@ export default class Combobox {
     const focusIndex = els.indexOf(focusEl)
 
     if ((focusIndex === els.length - 1 && indexDiff === 1) || (focusIndex === 0 && indexDiff === -1)) {
-      this.clearSelection()
+      this.resetSelection()
       this.input.focus()
       return
     }
@@ -146,10 +141,11 @@ export default class Combobox {
     for (const el of this.list.querySelectorAll('[aria-selected="true"]')) {
       el.removeAttribute('aria-selected')
     }
+  }
 
-    if (this.firstOptionSelectionMode === 'active') {
-      this.indicateDefaultOption()
-    }
+  resetSelection(): void {
+    this.clearSelection()
+    this.indicateDefaultOption()
   }
 }
 
@@ -194,8 +190,7 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
       break
     default:
       if (event.ctrlKey) break
-      combobox.clearSelection()
-      combobox.selectFirstItemIfNeeded()
+      combobox.resetSelection()
   }
 }
 

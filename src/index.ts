@@ -79,7 +79,7 @@ export default class Combobox {
     this.input.addEventListener('input', this.inputHandler)
     ;(this.input as HTMLElement).addEventListener('keydown', this.keyboardEventHandler)
     this.list.addEventListener('click', commitWithElement)
-    this.indicateDefaultOption()
+    this.resetSelection()
   }
 
   stop(): void {
@@ -138,8 +138,9 @@ export default class Combobox {
 
   clearSelection(): void {
     this.input.removeAttribute('aria-activedescendant')
-    for (const el of this.list.querySelectorAll('[aria-selected="true"]')) {
+    for (const el of this.list.querySelectorAll('[aria-selected="true"], [data-combobox-option-default="true"]')) {
       el.removeAttribute('aria-selected')
+      el.removeAttribute('data-combobox-option-default')
     }
   }
 

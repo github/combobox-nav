@@ -108,7 +108,7 @@ export default class Combobox {
     const focusIndex = els.indexOf(focusEl)
 
     if ((focusIndex === els.length - 1 && indexDiff === 1) || (focusIndex === 0 && indexDiff === -1)) {
-      this.resetSelection()
+      this.clearSelection()
       this.input.focus()
       return
     }

@@ -340,8 +340,6 @@ describe('combobox-nav', function () {
           <li><del>BB-8</del></li>
           <li id="hubot" role="option">Hubot</li>
           <li id="r2-d2" role="option">R2-D2</li>
-          <li id="johnny-5" hidden role="option">Johnny 5</li>
-          <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
           <li><a href="#link" role="option" id="link">Link</a></li>
         </ul>
       `
@@ -371,6 +369,23 @@ describe('combobox-nav', function () {
       }
 
       assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
+    })
+
+    it('pressing key down off the last item will have no items selected', () => {
+      // Get all visible options in the list
+      const options = document.querySelectorAll('[role=option]:not([aria-hidden=true])')
+      // Key press down for each item and ensure the next is selected
+      for (let i = 0; i < options.length; i++) {
+        if (i > 0) {
+          assert.equal(options[i - 1].getAttribute('aria-selected'), null)
+        }
+
+        assert.equal(options[i].getAttribute('aria-selected'), 'true')
+        press(input, 'ArrowDown')
+      }
+
+      const selected = document.querySelectorAll('[aria-selected]')
+      assert.equal(selected.length, 0)
     })
 
     it('indicates first option when restarted', () => {

@@ -285,6 +285,15 @@ describe('combobox-nav', function () {
       assert.equal(document.querySelector('[data-combobox-option-default]'), options[0])
     })
 
+    it('first item remains active when typing', () => {
+      const text = 'R2-D2'
+      for (let i = 0; i < text.length; i++) {
+        press(input, text[i])
+      }
+
+      assert.equal(document.querySelector('[data-combobox-option-default]'), options[0])
+    })
+
     it('applies default option on Enter', () => {
       let commits = 0
       document.addEventListener('combobox-commit', () => commits++)
@@ -299,10 +308,16 @@ describe('combobox-nav', function () {
       assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 0)
     })
 
-    it('resets default indication when selection cleared', () => {
+    it('resets default indication when selection reset', () => {
+      combobox.navigate(1)
+      combobox.resetSelection()
+      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 1)
+    })
+
+    it('removes default indication when selection cleared', () => {
       combobox.navigate(1)
       combobox.clearSelection()
-      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 1)
+      assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 0)
     })
 
     it('does not error when no options are visible', () => {
@@ -325,8 +340,6 @@ describe('combobox-nav', function () {
           <li><del>BB-8</del></li>
           <li id="hubot" role="option">Hubot</li>
           <li id="r2-d2" role="option">R2-D2</li>
-          <li id="johnny-5" hidden role="option">Johnny 5</li>
-          <li id="wall-e" role="option" aria-disabled="true">Wall-E</li>
           <li><a href="#link" role="option" id="link">Link</a></li>
         </ul>
       `
@@ -347,6 +360,32 @@ describe('combobox-nav', function () {
       assert.equal(document.querySelectorAll('[data-combobox-option-default]').length, 0)
       // Item is correctly selected
       assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
+    })
+
+    it('first item remains selected when typing', () => {
+      const text = 'R2-D2'
+      for (let i = 0; i < text.length; i++) {
+        press(input, text[i])
+      }
+
+      assert.equal(list.children[0].getAttribute('aria-selected'), 'true')
+    })
+
+    it('pressing key down off the last item will have no items selected', () => {
+      // Get all visible options in the list
+      const options = document.querySelectorAll('[role=option]:not([aria-hidden=true])')
+      // Key press down for each item and ensure the next is selected
+      for (let i = 0; i < options.length; i++) {
+        if (i > 0) {
+          assert.equal(options[i - 1].getAttribute('aria-selected'), null)
+        }
+
+        assert.equal(options[i].getAttribute('aria-selected'), 'true')
+        press(input, 'ArrowDown')
+      }
+
+      const selected = document.querySelectorAll('[aria-selected]')
+      assert.equal(selected.length, 0)
     })
 
     it('indicates first option when restarted', () => {

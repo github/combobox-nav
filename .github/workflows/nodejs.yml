@@ -23,6 +23,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 18.x
+      - name: Set CHROME_BIN (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: echo "CHROME_BIN=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" >> $GITHUB_ENV
       - name: Install Chromium runtime deps (Linux)
         if: startsWith(matrix.os, 'ubuntu')
         run: |

@@ -49,6 +49,13 @@ export default class Combobox {
       list.id = `combobox-${Math.random().toString().slice(2, 6)}`
     }
 
+    if (list.querySelectorAll('[role="option"]:not([id])').length > 0) {
+      console.warn([
+        'Combobox options must have unique IDs',
+        'See https://github.com/github/combobox-nav/?tab=readme-ov-file#combobox-options-must-have-unique-ids',
+      ].join('\n'))
+    }
+
     this.ctrlBindings = !!navigator.userAgent.match(/Macintosh/)
 
     this.keyboardEventHandler = event => keyboardBindings(event, this)

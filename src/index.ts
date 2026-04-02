@@ -126,11 +126,17 @@ export default class Combobox {
       el.removeAttribute('data-combobox-option-default')
 
       if (target === el) {
+        if (!target.id) {
+          target.id = `${this.list.id}-selected`
+        }
         this.input.setAttribute('aria-activedescendant', target.id)
         target.setAttribute('aria-selected', 'true')
         fireSelectEvent(target)
         target.scrollIntoView(this.scrollIntoViewOptions)
       } else {
+        if (el.id === `${this.list.id}-selected`) {
+          el.removeAttribute('id');
+        }
         el.removeAttribute('aria-selected')
       }
     }

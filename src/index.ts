@@ -126,6 +126,9 @@ export default class Combobox {
       el.removeAttribute('data-combobox-option-default')
 
       if (target === el) {
+        if (!target.id) {
+          target.id = `combobox-item-${Math.random().toString().slice(2, 6)}`
+        }
         this.input.setAttribute('aria-activedescendant', target.id)
         target.setAttribute('aria-selected', 'true')
         fireSelectEvent(target)

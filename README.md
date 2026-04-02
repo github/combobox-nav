@@ -108,3 +108,18 @@ These settings are available:
 npm install
 npm test
 ```
+
+## Troubleshooting
+
+### Combobox options must have unique IDs
+
+Passing a combobox whose options lack IDs results in the following console warning.
+
+> Combobox options must have unique IDs
+> See https://github.com/github/combobox-nav/?tab=readme-ov-file#combobox-options-must-have-unique-ids
+
+Without the IDs we lack a unique identifier for [`aria-activedescendant`](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/#kbd_focus_activedescendant) to reference. As a result, screen readers are unable to announce which option is currently selected.
+
+You can remove this warning by setting IDs on every option in the combobox.
+
+

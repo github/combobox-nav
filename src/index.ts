@@ -31,6 +31,7 @@ export default class Combobox {
   tabInsertsSuggestions: boolean
   firstOptionSelectionMode: FirstOptionSelectionMode
   scrollIntoViewOptions?: boolean | ScrollIntoViewOptions
+  didAutoAssignLastSelectedId: boolean
 
   constructor(
     input: HTMLTextAreaElement | HTMLInputElement,
@@ -44,6 +45,7 @@ export default class Combobox {
     this.scrollIntoViewOptions = scrollIntoViewOptions ?? {block: 'nearest', inline: 'nearest'}
 
     this.isComposing = false
+    this.didAutoAssignLastSelectedId = false
 
     if (!list.id) {
       list.id = `combobox-${Math.random().toString().slice(2, 6)}`
@@ -126,11 +128,19 @@ export default class Combobox {
       el.removeAttribute('data-combobox-option-default')
 
       if (target === el) {
+        if (!target.id) {
+          target.id = `${this.list.id}-selected`
+          this.didAutoAssignLastSelectedId = true
+        }
         this.input.setAttribute('aria-activedescendant', target.id)
         target.setAttribute('aria-selected', 'true')
         fireSelectEvent(target)
         target.scrollIntoView(this.scrollIntoViewOptions)
       } else {
+        if (el.id === `${this.list.id}-selected` && this.didAutoAssignLastSelectedId) {
+          el.removeAttribute('id')
+          this.didAutoAssignLastSelectedId = false
+        }
         el.removeAttribute('aria-selected')
       }
     }
@@ -141,6 +151,10 @@ export default class Combobox {
     for (const el of this.list.querySelectorAll('[aria-selected="true"], [data-combobox-option-default="true"]')) {
       el.removeAttribute('aria-selected')
       el.removeAttribute('data-combobox-option-default')
+      if (el.id === `${this.list.id}-selected` && this.didAutoAssignLastSelectedId) {
+        el.removeAttribute('id')
+        this.didAutoAssignLastSelectedId = false
+      }
     }
   }
 

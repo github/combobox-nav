@@ -437,16 +437,19 @@ describe('combobox-nav', function () {
       assert.equal(input.getAttribute('aria-expanded'), 'true')
 
       press(input, 'ArrowDown')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'list-id-selected')
       assert.equal(list.children[0].getAttribute('id'), 'list-id-selected')
       assert.equal(list.children[1].getAttribute('id'), 'hubot')
       assert.equal(list.children[2].getAttribute('id'), undefined)
 
       press(input, 'ArrowDown')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
       assert.equal(list.children[0].getAttribute('id'), undefined)
       assert.equal(list.children[1].getAttribute('id'), 'hubot')
       assert.equal(list.children[2].getAttribute('id'), undefined)
 
       press(input, 'ArrowDown')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'list-id-selected')
       assert.equal(list.children[0].getAttribute('id'), undefined)
       assert.equal(list.children[1].getAttribute('id'), 'hubot')
       assert.equal(list.children[2].getAttribute('id'), 'list-id-selected')

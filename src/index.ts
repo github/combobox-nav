@@ -151,6 +151,10 @@ export default class Combobox {
     for (const el of this.list.querySelectorAll('[aria-selected="true"], [data-combobox-option-default="true"]')) {
       el.removeAttribute('aria-selected')
       el.removeAttribute('data-combobox-option-default')
+      if (el.id === `${this.list.id}-selected` && this.didAutoAssignLastSelectedId) {
+        el.removeAttribute('id')
+        this.didAutoAssignLastSelectedId = false
+      }
     }
   }
 

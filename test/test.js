@@ -453,6 +453,12 @@ describe('combobox-nav', function () {
       assert.equal(list.children[0].getAttribute('id'), undefined)
       assert.equal(list.children[1].getAttribute('id'), 'hubot')
       assert.equal(list.children[2].getAttribute('id'), 'list-id-selected')
+
+      press(input, 'Escape')
+      assert.equal(input.getAttribute('aria-activedescendant'), undefined)
+      assert.equal(list.children[0].getAttribute('id'), undefined)
+      assert.equal(list.children[1].getAttribute('id'), 'hubot')
+      assert.equal(list.children[2].getAttribute('id'), undefined)
     })
   })
 })

@@ -460,5 +460,21 @@ describe('combobox-nav', function () {
       assert.equal(list.children[1].getAttribute('id'), 'hubot')
       assert.equal(list.children[2].getAttribute('id'), null)
     })
+
+    it('avoids collisions with existing IDs when automatically adding option IDs', function () {
+      const div = document.createElement('div')
+      div.setAttribute('id', 'list-id-selected')
+      document.body.appendChild(div)
+
+      const combobox = new Combobox(input, list)
+      combobox.start()
+      assert.equal(input.getAttribute('aria-expanded'), 'true')
+
+      press(input, 'ArrowDown')
+      assert.equal(input.getAttribute('aria-activedescendant'), null)
+      assert.equal(list.children[0].getAttribute('id'), null)
+      assert.equal(list.children[1].getAttribute('id'), 'hubot')
+      assert.equal(list.children[2].getAttribute('id'), null)
+    })
   })
 })

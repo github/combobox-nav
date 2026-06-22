@@ -410,4 +410,71 @@ describe('combobox-nav', function () {
       })
     })
   })
+
+  describe('with missing IDs on options', function () {
+    let input
+    let list
+    beforeEach(function () {
+      document.body.innerHTML = `
+        <input type="text">
+        <ul role="listbox" id="list-id">
+          <li role="option">Baymax</li>
+          <li id="hubot" role="option">Hubot</li>
+          <li role="option">R2-D2</li>
+        </ul>
+      `
+      input = document.querySelector('input')
+      list = document.querySelector('ul')
+    })
+
+    afterEach(function () {
+      document.body.innerHTML = ''
+    })
+
+    it('automatically adds and removes option IDs when needed for aria-activedescendant', function () {
+      const combobox = new Combobox(input, list)
+      combobox.start()
+      assert.equal(input.getAttribute('aria-expanded'), 'true')
+
+      press(input, 'ArrowDown')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'list-id-selected')
+      assert.equal(list.children[0].getAttribute('id'), 'list-id-selected')
+      assert.equal(list.children[1].getAttribute('id'), 'hubot')
+      assert.equal(list.children[2].getAttribute('id'), null)
+
+      press(input, 'ArrowDown')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'hubot')
+      assert.equal(list.children[0].getAttribute('id'), null)
+      assert.equal(list.children[1].getAttribute('id'), 'hubot')
+      assert.equal(list.children[2].getAttribute('id'), null)
+
+      press(input, 'ArrowDown')
+      assert.equal(input.getAttribute('aria-activedescendant'), 'list-id-selected')
+      assert.equal(list.children[0].getAttribute('id'), null)
+      assert.equal(list.children[1].getAttribute('id'), 'hubot')
+      assert.equal(list.children[2].getAttribute('id'), 'list-id-selected')
+
+      press(input, 'Escape')
+      assert.equal(input.getAttribute('aria-activedescendant'), null)
+      assert.equal(list.children[0].getAttribute('id'), null)
+      assert.equal(list.children[1].getAttribute('id'), 'hubot')
+      assert.equal(list.children[2].getAttribute('id'), null)
+    })
+
+    it('avoids collisions with existing IDs when automatically adding option IDs', function () {
+      const div = document.createElement('div')
+      div.setAttribute('id', 'list-id-selected')
+      document.body.appendChild(div)
+
+      const combobox = new Combobox(input, list)
+      combobox.start()
+      assert.equal(input.getAttribute('aria-expanded'), 'true')
+
+      press(input, 'ArrowDown')
+      assert.equal(input.getAttribute('aria-activedescendant'), null)
+      assert.equal(list.children[0].getAttribute('id'), null)
+      assert.equal(list.children[1].getAttribute('id'), 'hubot')
+      assert.equal(list.children[2].getAttribute('id'), null)
+    })
+  })
 })

@@ -39,11 +39,9 @@ jobs:
       - run: npm version ${TAG_NAME} --git-tag-version=false
         env:
           TAG_NAME: ${{ github.event.release.tag_name }}
-      # Install latest version of npm for publishing with provenance
-      - run: npm install -g npm
-      - run: npm whoami; npm --ignore-scripts publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      # npm 11.5.1+ is required for trusted publishing (OIDC) with provenance
+      - run: npm install -g npm@latest
+      - run: npm --ignore-scripts publish --provenance --access public
   publish-github:
     name: Publish to GitHub Packages
     runs-on: ubuntu-latest 

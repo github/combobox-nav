@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@github/prettier-config": "^0.0.6",
+    "browserslist": "4.22.0",
     "chai": "^4.3.9",
     "chromium": "^3.0.3",
     "eslint": "^8.50.0",
@@ -32,7 +33,7 @@
     "karma-chrome-launcher": "^3.2.0",
     "karma-mocha": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
-    "mocha": "^10.2.0",
+    "mocha": "^12.0.0",
     "typescript": "^5.2.2"
   },
   "overrides": {

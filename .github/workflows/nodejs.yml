@@ -20,9 +20,9 @@ jobs:
         os: [ubuntu-22.04, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1.2.0
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # v1.4.6
         with:
           node-version: 18.x
       - name: Set CHROME_BIN (macOS)

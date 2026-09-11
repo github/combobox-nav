@@ -7,6 +7,7 @@ function press(input, key, ctrlKey) {
 }
 
 function click(element) {
+  element.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, cancelable: true}))
   element.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
 }
 
@@ -162,6 +163,29 @@ describe('combobox-nav', function () {
       assert.equal(expectedTargets.length, 2)
       assert.equal(expectedTargets[0], 'hubot')
       assert.equal(expectedTargets[1], 'baymax')
+    })
+
+    it('fires commit before a blur handler can stop the combobox', function () {
+      const expectedTargets = []
+
+      document.addEventListener('combobox-commit', function ({target}) {
+        expectedTargets.push(target.id)
+      })
+
+      input.addEventListener('blur', function () {
+        list.hidden = true
+        combobox.clearSelection()
+        combobox.stop()
+      })
+
+      const option = document.getElementById('hubot')
+      option.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, cancelable: true}))
+      input.dispatchEvent(new FocusEvent('blur'))
+      option.dispatchEvent(new MouseEvent('mouseup', {bubbles: true, cancelable: true}))
+      option.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
+
+      assert.equal(expectedTargets.length, 1)
+      assert.equal(expectedTargets[0], 'hubot')
     })
 
     it('fires select events on navigating', function () {

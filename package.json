@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@github/prettier-config": "^0.0.6",
-    "browserslist": "4.22.0",
+    "browserslist": "4.28.9",
     "chai": "^4.3.9",
     "chromium": "^3.0.3",
     "eslint": "^8.50.0",

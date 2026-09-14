@@ -27,6 +27,7 @@
     "chai": "^4.3.9",
     "chromium": "^3.0.3",
     "eslint": "^8.50.0",
+    "eslint-plugin-escompat": "3.11.6",
     "eslint-plugin-github": "^4.10.1",
     "karma": "^6.4.2",
     "karma-chai": "^0.1.0",

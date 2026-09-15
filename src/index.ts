@@ -80,7 +80,7 @@ export default class Combobox {
     this.input.addEventListener('compositionend', this.compositionEventHandler)
     this.input.addEventListener('input', this.inputHandler)
     ;(this.input as HTMLElement).addEventListener('keydown', this.keyboardEventHandler)
-    this.list.addEventListener('click', commitWithElement)
+    this.list.addEventListener('mousedown', commitWithElement)
     this.resetSelection()
   }
 
@@ -91,7 +91,7 @@ export default class Combobox {
     this.input.removeEventListener('compositionend', this.compositionEventHandler)
     this.input.removeEventListener('input', this.inputHandler)
     ;(this.input as HTMLElement).removeEventListener('keydown', this.keyboardEventHandler)
-    this.list.removeEventListener('click', commitWithElement)
+    this.list.removeEventListener('mousedown', commitWithElement)
   }
 
   indicateDefaultOption(): void {
@@ -212,6 +212,7 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
 }
 
 function commitWithElement(event: MouseEvent) {
+  if (event.button !== 0) return
   if (!(event.target instanceof Element)) return
   const target = event.target.closest('[role="option"]')
   if (!target) return
@@ -223,6 +224,7 @@ function commit(input: HTMLTextAreaElement | HTMLInputElement, list: HTMLElement
   const target = list.querySelector<HTMLElement>('[aria-selected="true"], [data-combobox-option-default="true"]')
   if (!target) return false
   if (target.getAttribute('aria-disabled') === 'true') return true
+  fireCommitEvent(target)
   target.click()
   return true
 }

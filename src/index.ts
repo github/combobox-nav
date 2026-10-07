@@ -213,10 +213,11 @@ function keyboardBindings(event: KeyboardEvent, combobox: Combobox) {
   }
 }
 
-// Set when a mousedown has already committed an option, so the click that follows
-// does not commit it a second time. That click may never arrive, for example when
-// the pointer leaves the option before the button is released, so the next click
-// anywhere in the document clears it.
+// Set when a mousedown has already committed an option, so the mouse click that
+// follows does not commit it a second time. That click may never arrive, for example
+// when the pointer leaves the option before the button is released, so only a mouse
+// click (detail > 0) is suppressed: keyboard and programmatic clicks (detail 0)
+// always commit, and the next click anywhere in the document clears the state.
 let committedOnMousedown: Element | null = null
 
 function clearMousedownCommit(): void {
@@ -233,7 +234,7 @@ function commitWithElement(event: MouseEvent) {
     if (event.button !== 0) return
     committedOnMousedown = target
     target.ownerDocument.addEventListener('click', clearMousedownCommit, {once: true})
-  } else if (committedOnMousedown === target) {
+  } else if (event.detail > 0 && committedOnMousedown === target) {
     committedOnMousedown = null
     return
   }

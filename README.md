@@ -55,7 +55,7 @@ combobox.destroy()
 
 ## Events
 
-A bubbling `combobox-commit` event is fired on the list element when an option is selected via keyboard or click.
+A bubbling `combobox-commit` event is fired on the list element when an option is selected via keyboard or mouse. Mouse selection is observed on `mousedown` so the event still fires if the input blurs before `click` (for example when a `blur` handler hides the list).
 
 For example, autocomplete when an option is selected:
 

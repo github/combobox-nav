@@ -126,28 +126,17 @@ export default class Combobox {
     const target = els[indexOfItem]
     if (!target) return
 
-    for (const el of els) {
-      el.removeAttribute('data-combobox-option-default')
-
-      if (target === el) {
-        if (!target.id && !document.getElementById(`${this.list.id}-selected`)) {
-          target.id = `${this.list.id}-selected`
-          this.didAutoAssignLastSelectedId = true
-        }
-        if (target.id) {
-          this.input.setAttribute('aria-activedescendant', target.id)
-        }
-        target.setAttribute('aria-selected', 'true')
-        fireSelectEvent(target)
-        target.scrollIntoView(this.scrollIntoViewOptions)
-      } else {
-        if (el.id === `${this.list.id}-selected` && this.didAutoAssignLastSelectedId) {
-          el.removeAttribute('id')
-          this.didAutoAssignLastSelectedId = false
-        }
-        el.removeAttribute('aria-selected')
-      }
+    this.clearSelection()
+    if (!target.id && !document.getElementById(`${this.list.id}-selected`)) {
+      target.id = `${this.list.id}-selected`
+      this.didAutoAssignLastSelectedId = true
     }
+    if (target.id) {
+      this.input.setAttribute('aria-activedescendant', target.id)
+    }
+    target.setAttribute('aria-selected', 'true')
+    fireSelectEvent(target)
+    target.scrollIntoView(this.scrollIntoViewOptions)
   }
 
   clearSelection(): void {

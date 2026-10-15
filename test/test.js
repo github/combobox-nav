@@ -531,5 +531,20 @@ describe('combobox-nav', function () {
       assert.equal(list.children[1].getAttribute('id'), 'hubot')
       assert.equal(list.children[2].getAttribute('id'), null)
     })
+
+    it('moves generated IDs backwards with the selected option', function () {
+      list.children[1].removeAttribute('id')
+      const combobox = new Combobox(input, list)
+      combobox.start()
+      press(input, 'ArrowDown')
+      press(input, 'ArrowDown')
+      press(input, 'ArrowUp')
+
+      assert.equal(list.children[0].id, 'list-id-selected')
+      assert.equal(list.children[1].getAttribute('id'), null)
+      assert.equal(input.getAttribute('aria-activedescendant'), list.children[0].id)
+      assert.equal(document.getElementById(input.getAttribute('aria-activedescendant')), list.children[0])
+      combobox.destroy()
+    })
   })
 })
